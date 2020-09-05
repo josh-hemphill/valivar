@@ -62,6 +62,18 @@ function isBuffer(obj: unknown): boolean {
 		obj instanceof Buffer
 	);
 }
+
+let localGlobal = {};
+try {
+	localGlobal = globalThis;
+} catch (error) {
+	Object.defineProperty(global, 'globalThis',{
+		value:{},
+		enumerable:true,
+	});
+	localGlobal = global.globalThis;
+}
+
 // HTML Type Checking from https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object
 //Returns true if it is a DOM node
 function isNode(o: unknown): boolean {

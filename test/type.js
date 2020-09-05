@@ -1,5 +1,5 @@
 import { getType } from '../lib/type';
-const localGlobal = {};
+let localGlobal = {};
 try {
 	localGlobal = globalThis;
 } catch (error) {
