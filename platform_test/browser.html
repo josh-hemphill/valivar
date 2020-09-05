@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Test Browser Platform</title>
+	<script src="../dist/valivar.js"></script>
+</head>
+
+<body>
+	<h3 id="output"></h3>
+</body>
+<script>
+	var output = document.getElementById('output')
+	try {
+		output.innerText = JSON.stringify(new valivar())
+	} catch (error) {
+		output.innerText = JSON.stringify(error)
+	}
+</script>
+
+</html>
