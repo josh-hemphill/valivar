@@ -1,5 +1,11 @@
 import { getType } from '../lib/type';
-
+const localGlobal = {};
+try {
+	localGlobal = globalThis;
+} catch (error) {
+	global.globalThis = {};
+	localGlobal = global.globalThis;
+}
 describe('Types',() => {
 	describe('.getType()', () => {
 		test('should have all builtin types', () => {
@@ -36,14 +42,14 @@ describe('Types',() => {
 				nodeType = 2
 			}
 			// eslint-disable-next-line no-undef
-			globalThis.Node = Node;
+			localGlobal.Node = Node;
 			expect(getType(new Node())).toBe('node');
 			class Element {
 				nodeName = 'hello'
 				nodeType = 1
 			}
 			// eslint-disable-next-line no-undef
-			globalThis.HTMLElement = Element;
+			localGlobal.HTMLElement = Element;
 			expect(getType(new Element())).toBe('element');
 		});
 	});
