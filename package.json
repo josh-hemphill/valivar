@@ -28,8 +28,7 @@
 		"test-cov": "npx jest --coverage --runInBand --forceExit",
 		"docs": "documentation readme ./lib/*.ts --section=API",
 		"lint": "eslint lib test",
-		"build": "rollup -c",
-		"prepublish": "npm run build"
+		"build": "rollup -c"
 	},
 	"main": "dist/valivar.cjs.js",
 	"browser": "dist/valivar.esm.js",
@@ -38,7 +37,7 @@
 		"url": "https://github.com/josh-hemphill/valivar/issues"
 	},
 	"engines": {
-		"node": ">=8"
+		"node": ">= 10.14.2"
 	},
 	"dependencies": {},
 	"devDependencies": {

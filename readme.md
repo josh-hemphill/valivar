@@ -19,7 +19,7 @@ Mostly derived from [eivindfjeldstad/validate](https://github.com/eivindfjeldsta
 npm install valivar
 ```
 
-### Deno (coming)
+### Deno
 ```js
 import valivar from "https://deno.land/x/valivar/mod.ts"
 ```
@@ -29,9 +29,9 @@ import valivar from "https://deno.land/x/valivar/mod.ts"
 <script type="text/javascript" src="dist/valivar.js"></script>
 ```
 
-### From CDN (coming)
+### From CDN
 ```html
-<script type="text/javascript" src="https://unpkg.com/valivar/dist/"></script>
+<script type="text/javascript" src="https://unpkg.com/valivar"></script>
 ```
 
 ## Examples
