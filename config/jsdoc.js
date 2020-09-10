@@ -16,9 +16,9 @@ module.exports = {
 		],
 	},
 	'plugins': [
-		'node_modules/better-docs/typescript',
+		'better-docs/typescript',
 		'plugins/markdown',
-		'node_modules/better-docs/category',
+		'better-docs/category',
 	],
 	'source': {
 		'include': [
