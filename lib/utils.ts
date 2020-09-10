@@ -1,4 +1,4 @@
-import dot from './dot';
+import { dot } from './dot';
 import { getType } from './type';
 const typeOf = getType;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

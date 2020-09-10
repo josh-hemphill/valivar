@@ -1,4 +1,4 @@
-import Schema from '../lib/schema';
+import { Schema } from '../lib/schema';
 import Property from '../lib/property';
 import ValidationError from '../lib/error';
 import Messages from '../lib/messages';

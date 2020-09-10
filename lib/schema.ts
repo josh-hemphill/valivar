@@ -1,5 +1,5 @@
-import dot from './dot';
-import typecast from './typecast';
+import { dot } from './dot';
+import { typecast } from './typecast';
 import Property from './property';
 import Messages from './messages';
 import Validators, {ValidatorProps} from './validators';
@@ -38,7 +38,7 @@ type validationOptions = {typecast?: boolean; strip?: boolean; strict?: boolean;
  * @param {Boolean} [opts.strip=true] - strip properties not defined in the schema
  * @param {Boolean} [opts.strict=false] - validation fails when object contains properties not defined in the schema
  */
-export default class Schema {
+export class Schema {
 	opts: Record<key, unknown>;
 	hooks: hookFunction[];
 	props: Record<key, Property>;

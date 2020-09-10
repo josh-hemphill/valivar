@@ -52,7 +52,7 @@ Define a schema and call `.validate()` with the object you want to validate.
 The `.validate()` function returns an array of validation errors.
 
 ```js
-import Schema from 'validate'
+import { Schema } from 'valivar'
 
 const user = new Schema({
   username: {

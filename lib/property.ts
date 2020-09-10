@@ -1,6 +1,6 @@
 import ValidationError from './error';
 import { join } from './utils';
-import Schema from './schema';
+import { Schema } from './schema';
 import { obj, key, magnitudeOptions, ValidationFunction, rule, messageFunction, messageOpts, argsTypes } from './tsPrimitives';
 import Messages from './messages';
 import { ValidatorProps } from './validators';

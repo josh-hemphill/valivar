@@ -1,4 +1,4 @@
-import typecast from '../lib/typecast';
+import { typecast } from '../lib/typecast';
 
 describe('Typecast', () => {
 	describe('when called', () => {

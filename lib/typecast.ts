@@ -150,4 +150,4 @@ Object.defineProperty(typecast, 'name', {
 	value: 'Typecast',
 });
 
-export default typecast;
+export {typecast};

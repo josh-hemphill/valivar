@@ -1,5 +1,5 @@
 import Property from '../lib/property';
-import Schema from '../lib/schema';
+import { Schema } from '../lib/schema';
 import Messages from '../lib/messages';
 
 describe('Property', () => {

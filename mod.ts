@@ -1,8 +1,8 @@
 // @deno-types="./dist/dot.d.ts"
-import dot from './dist/dot.js';
-// @deno-types="./dist/validate.d.ts"
-import validate from './dist/valivar.js';
+import { dot } from './dist/dot.js';
+// @deno-types="./dist/valivar.d.ts"
+import { Schema as valivar } from './dist/valivar.js';
 // @deno-types="./dist/typecast.d.ts"
-import typecast from './dist/typecast.js';
+import { typecast } from './dist/typecast.js';
 
-export {dot, validate, typecast};
+export {dot, valivar, typecast};

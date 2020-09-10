@@ -22,7 +22,7 @@ function isIntegerLike(prop: unknown): prop is number {
  * @exports dot
  * @public
  */
-const dot = {
+export const dot = {
 	name: 'Dot',
 
 	/**
@@ -139,7 +139,6 @@ const dot = {
 		}
 	},
 };
-export default dot;
 
 /**
 * @private
