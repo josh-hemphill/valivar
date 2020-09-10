@@ -53,6 +53,17 @@ function isWholeObject(obj: unknown): obj is obj {
 	return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length; 
 }
 
+
+let localBuffer = {};
+try {
+	localBuffer = Buffer;
+} catch (error) {
+	Object.defineProperty(global, 'Buffer',{
+		value: ArrayBuffer,
+		enumerable:true,
+	});
+	localBuffer = global.Buffer;
+}
 function isBuffer(obj: unknown): boolean {
 	return !!(
 		// Does not support Safari 5-7 (missing Object.prototype.constructor)
