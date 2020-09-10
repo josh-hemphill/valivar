@@ -1,0 +1,537 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  tracking-code-which-will-go-to-the-HEAD
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Valivar schema.ts</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="style.css">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+			<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+			<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+			<link rel="manifest" href="/site.webmanifest">
+			<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#19c612">
+			<meta name="msapplication-TileColor" content="#9f00a7">
+			<meta name="theme-color" content="#ffffff">
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+             
+                <a class="image" href="index.html">
+                    <img src="logo.png" alt="logo">
+                </a>
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Valivar - Javascript/Typescript schema-based validation and sanitation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    API Documentation
+                </a>
+                
+                <div class="dropdown is-hoverable is-right">
+                    <a class="dropdown-trigger link">
+                        Tutorials
+                        <i class="fas fa-chevron-down fa-xs"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <div class="dropdown-content">
+                        
+                            <a class="dropdown-item" href="tutorial-Dynamic Objects & Arrays.html">
+                                Dynamic Objects & Arrays
+                            </a>
+                        
+                        </div>
+                    </div>
+                </div>
+                
+                 
+                    
+                        <a
+                            class="link user-link "
+                            href="https://github.com/josh-hemphill/valivar"
+                        >
+                            Github
+                        </a>
+                    
+                        <a
+                            class="link user-link "
+                            href="https://codepen.io/josh-hemphill/pen/Rwaxbor/left/?editors=1010"
+                        >
+                            Playground
+                        </a>
+                    
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+                <div class="search-wrapper">
+                    <input id="search" type="text" placeholder="Search docs..." class="input">
+                </div>
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Modules</h3><ul><li><a href="module-Schema.html">Schema</a></li></ul><h3>Classes</h3><ul><li><a href="module.exports.html">exports</a></li><li><a href="module-Schema.html">Schema</a></li></ul><h3>Global</h3><ul><li><a href="global.html#array">array</a></li><li><a href="global.html#date">date</a></li><li><a href="global.html#each">each</a></li><li><a href="global.html#elements">elements</a></li><li><a href="global.html#enum">enum</a></li><li><a href="global.html#getType">getType</a></li><li><a href="global.html#length">length</a></li><li><a href="global.html#match">match</a></li><li><a href="global.html#message">message</a></li><li><a href="global.html#number">number</a></li><li><a href="global.html#object">object</a></li><li><a href="global.html#path">path</a></li><li><a href="global.html#properties">properties</a></li><li><a href="global.html#required">required</a></li><li><a href="global.html#schema">schema</a></li><li><a href="global.html#size">size</a></li><li><a href="global.html#string">string</a></li><li><a href="global.html#type">type</a></li><li><a href="global.html#typecast">typecast</a></li><li><a href="global.html#use">use</a></li><li><a href="global.html#validate">validate</a></li></ul></div><div class="category"><h2>Bonus Modules</h2><h3>Modules</h3><ul><li><a href="module-dot.html">dot</a></li><li><a href="module-typecast.html">typecast</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>schema.ts</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import dot from './dot';
+import typecast from './typecast';
+import Property from './property';
+import Messages from './messages';
+import Validators, {ValidatorProps} from './validators';
+import ValidationError from './error';
+import { key, obj, rule, typecasters, hookFunction, messageOpts } from './tsPrimitives';
+import { walk, enumerate, join, assign, isWholeObject, isRule, isLimitedKey } from './utils';
+
+type validationOptions = {typecast?: boolean; strip?: boolean; strict?: boolean;}
+
+/**
+ * @module Schema
+ */
+/**
+ * A Schema defines the structure that objects should be validated against.
+ * @example
+ * const post = new Schema({
+ *   title: {
+ *     type: String,
+ *     required: true,
+ *     length: { min: 1, max: 255 }
+ *   },
+ *   content: {
+ *     type: String,
+ *     required: true
+ *   },
+ *   published: {
+ *     type: Date,
+ *     required: true
+ *   },
+ *   keywords: [{ type: String }]
+ * })
+ *
+ * @param {Object} [obj] - schema definition
+ * @param {Object} [opts] - options
+ * @param {Boolean} [opts.typecast=false] - typecast values before validation
+ * @param {Boolean} [opts.strip=true] - strip properties not defined in the schema
+ * @param {Boolean} [opts.strict=false] - validation fails when object contains properties not defined in the schema
+ */
+export default class Schema {
+	opts: Record&lt;key, unknown>;
+	hooks: hookFunction[];
+	props: Record&lt;key, Property>;
+	messages: Record&lt;string,messageOpts>;
+	validators: ValidatorProps;
+	typecasters: typecasters;
+	static ValidationError: typeof ValidationError = ValidationError;
+	constructor(obj: Record&lt;key, rule> = {}, opts: Record&lt;key, unknown> = {}) {
+		this.opts = opts;
+		this.hooks = [];
+		this.props = {};
+		this.messages = &lt;Record&lt;string,messageOpts>>Object.assign({}, Messages);
+		this.validators = &lt;ValidatorProps>Object.assign({}, Validators);
+		this.typecasters = Object.assign({}, typecast.casters);
+		Object.keys(obj).forEach((k) => this.path(k, obj[k]));
+	}
+
+	/**
+   * Create or update `path` with given `rules`.
+   *
+   * @example
+   * const schema = new Schema()
+   * schema.path('name.first', { type: String })
+   * schema.path('name.last').type(String).required()
+   *
+   * @param {String} path - full path using dot-notation
+   * @param {Object|Array|String|Schema|Property} [rules] - rules to apply
+   * @return {Property}
+   */
+	path(path: string, rules?: rule | rule[]): Property {
+		const parts = path.split('.');
+		const suffix = parts.pop();
+		const prefix = parts.join('.');
+
+		// Make sure full path is created
+		if (prefix) {
+			this.path(prefix);
+		}
+
+		// Array index placeholder
+		if (suffix === '$') {
+			this.path(prefix).type(Array);
+		}
+
+		// Catchall Object placeholder
+		if (suffix === '*') {
+			this.path(prefix).type(Object);
+		}
+
+		// Nested schema
+		if (rules instanceof Schema) {
+			rules.hook((k: string, v: rule) => this.path(join(k, path), v));
+			return this.path(path, rules.props);
+		}
+
+		// Return early when given a `Property`
+		if (rules instanceof Property) {
+			this.props[path] = rules;
+			// Notify parents if mounted
+			this.propagate(path, rules);
+			return rules;
+		}
+
+		const prop = this.props[path] || new Property(path, this);
+
+		this.props[path] = prop;
+		// Notify parents if mounted
+		this.propagate(path, prop);
+
+		// No rules?
+		if (!rules) return prop;
+
+		// type shorthand
+		// `{ name: String }`
+		if (typeof rules === 'string' || typeof rules === 'function') {
+			prop.type(rules);
+			return prop;
+		}
+
+		// Allow arrays to be defined implicitly:
+		// `{ keywords: [String] }`
+		// `{ keyVal: [[String, Number]] }`
+		if (Array.isArray(rules)) {
+			prop.type(Array);
+
+			if (rules.length === 1) {
+				if (isRule(rules[0])) {
+					prop.each(rules[0]);
+				}
+			} else {
+				if (rules.every((x) => isRule(x))) {
+					prop.elements(&lt;rule[]>rules);
+				}
+			}
+
+			return prop;
+		}
+
+		const keys = Object.keys(rules);
+		let nested = false;
+
+		// Check for nested objects
+		for (const key of keys) {
+			if (isWholeObject(prop) &amp;&amp; typeof prop[key] === 'function') continue;
+			prop.type(Object);
+			nested = true;
+			break;
+		}
+
+		keys.forEach((key) => {
+			const rule = rules[key];
+			if (isRule(rule)) {
+				if (nested) {
+					return this.path(join(key, path), rule);
+				}
+				if (isWholeObject(prop)) {
+					const pathFn = prop[key];
+					if (typeof pathFn === 'function') {
+						pathFn.call(prop, rule);
+					}
+				}
+			}
+		});
+
+		return prop;
+	}
+
+	/**
+   * Typecast given `obj`.
+   *
+   * @param {Object} obj - the object to typecast
+   * @return {Schema}
+   * @private
+   */
+	typecast(obj: unknown): this {
+		for (const [path, prop] of Object.entries(this.props)) {
+			if (isWholeObject(obj)) {
+				enumerate(path, obj, (key, value) => {
+					if (value === null || value === undefined) return;
+					const cast = prop.typecast(value);
+					if (cast === value) return;
+					dot.set(obj, key, cast);
+				});
+			}
+		}
+
+		return this;
+	}
+
+	/**
+   * Strip all keys not defined in the schema
+   *
+   * @param {Object} obj - the object to strip
+   * @param {String} [prefix]
+   * @return {Schema}
+   * @private
+   */
+	strip(obj: unknown): this {
+		walk(obj, (path, prop, isCatchall = false) => {
+			if (isLimitedKey(prop) &amp;&amp; this.props[prop]) return true;
+			if (isCatchall) return false;
+			if (isWholeObject(obj)) dot.delete(obj, path);
+			return false;
+		});
+
+		return this;
+	}
+
+	/**
+   * Create errors for all properties that are not defined in the schema
+   *
+   * @param {Object} obj - the object to check
+   * @return {Schema}
+   * @private
+   */
+	enforce(obj: obj): ValidationError[] | [] {
+		const errors: ValidationError[] = [];
+
+		walk(obj, (path, prop, isCatchall = false) => {
+			if (isLimitedKey(prop) &amp;&amp; this.props[prop]) return true;
+			if (isCatchall) return false;
+			const error = new ValidationError(Messages.illegal(path), path);
+			errors.push(error);
+			return false;
+		});
+
+		return errors;
+	}
+
+	/**
+   * Validate given `obj`.
+   *
+   * @example
+   * const schema = new Schema({ name: { required: true }})
+   * const errors = schema.validate({})
+   * assert(errors.length == 1)
+   * assert(errors[0].message == 'name is required')
+   * assert(errors[0].path == 'name')
+   *
+   * @param {Object} obj - the object to validate
+   * @param {Object} [opts] - options, see [Schema](#schema-1)
+   * @return {Array}
+   */
+	validate(obj: obj, opts: validationOptions = {}): ValidationError[] | [] {
+		opts = Object.assign(this.opts, opts);
+
+		const errors: ValidationError[] = [];
+
+		if (opts.typecast) {
+			this.typecast(obj);
+		}
+
+		if (opts.strict) {
+			errors.push(...this.enforce(obj));
+		}
+
+		if (opts.strip !== false) {
+			this.strip(obj);
+		}
+
+		for (const [path, prop] of Object.entries(this.props)) {
+			enumerate(path, obj, (key, value) => {
+				const err = prop.validate(value, obj, key);
+				if (err) errors.push(err);
+			});
+		}
+
+		return errors;
+	}
+
+	/**
+   * Assert that given `obj` is valid.
+   *
+   * @example
+   * const schema = new Schema({ name: String })
+   * schema.assert({ name: 1 }) // Throws an error
+   *
+   * @param {Object} obj
+   * @param {Object} [opts]
+   */
+	assert(obj: obj, opts: validationOptions): void {
+		const [err] = this.validate(obj, opts);
+		if (err) throw err;
+	}
+
+	/**
+   * Override default error messages.
+   *
+   * @example
+   * const hex = (val) => /^0x[0-9a-f]+$/.test(val)
+   * schema.path('some.path').use({ hex })
+   * schema.message('hex', path => `${path} must be hexadecimal`)
+   *
+   * @example
+   * schema.message({ hex: path => `${path} must be hexadecimal` })
+   *
+   * @param {String|Object} name - name of the validator or an object with name-message pairs
+   * @param {String|Function} [message] - the message or message generator to use
+   * @return {Schema}
+   */
+	message(name: string | {[index: string]: string}, message: string | CallableFunction): this {
+		assign(name, message, this.messages);
+		return this;
+	}
+
+	/**
+   * Override default validators.
+   *
+   * @example
+   * schema.validator('required', val => val != null)
+   *
+   * @example
+   * schema.validator({ required: val => val != null })
+   *
+   * @param {String|Object} name - name of the validator or an object with name-function pairs
+   * @param {Function} [fn] - the function to use
+   * @return {Schema}
+   */
+	validator(name: string | {[index: string]: CallableFunction}, fn: CallableFunction): this {
+		assign(name, fn, this.validators);
+		return this;
+	}
+
+	/**
+   * Override default typecasters.
+   *
+   * @example
+   * schema.typecaster('SomeClass', val => new SomeClass(val))
+   *
+   * @example
+   * schema.typecaster({ SomeClass: val => new SomeClass(val) })
+   *
+   * @param {String|Object} name - name of the validator or an object with name-function pairs
+   * @param {Function} [fn] - the function to use
+   * @return {Schema}
+   */
+	typecaster(name: string | {[index: string]: CallableFunction}, fn: CallableFunction): this {
+		assign(name, fn, this.typecasters);
+		return this;
+	}
+
+	/**
+   * Accepts a function that is called whenever new props are added.
+   *
+   * @param {Function} fn - the function to call
+   * @return {Schema}
+   * @private
+   */
+	hook(fn: hookFunction): this {
+		this.hooks.push(fn);
+		return this;
+	}
+
+	/**
+   * Notify all subscribers that a property has been added.
+   *
+   * @param {String} path - the path of the property
+   * @param {Property} prop - the new property
+   * @return {Schema}
+   * @private
+   */
+	propagate(path: string, prop: Property): this {
+		this.hooks.forEach((fn) => fn(path, prop));
+		return this;
+	}
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.4</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by 
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+<script src="scripts/search.js"> </script>
+
+</body>
+</html>
