@@ -1,4 +1,10 @@
-declare const _default: {
+/**
+ * Get and set points in an object by their 'dot' path
+ * @category Bonus Modules
+ * @exports dot
+ * @public
+ */
+declare const dot: {
     name: string;
     /**
      * Set given `path`
@@ -7,7 +13,7 @@ declare const _default: {
      * @param {String} path
      * @param {Mixed} val
      * @return {Object}
-     * @api public
+     * @public
      */
     set(obj: Record<string | number | symbol, unknown>, path: string, val: unknown): Record<string | number | symbol, unknown>;
     /**
@@ -16,7 +22,7 @@ declare const _default: {
      * @param {Object} obj
      * @param {String} path
      * @return {Mixed}
-     * @api public
+     * @public
      */
     get(obj: Record<string | number | symbol, unknown>, path: string): unknown;
     /**
@@ -25,9 +31,9 @@ declare const _default: {
      * @param {Object} obj
      * @param {String} path
      * @return {Mixed}
-     * @api public
+     * @public
      */
     delete(obj: Record<string | number | symbol, unknown>, path: string): void;
 };
-export { _default as default };
+export { dot as default };
 //# sourceMappingURL=dot.esm.d.ts.map

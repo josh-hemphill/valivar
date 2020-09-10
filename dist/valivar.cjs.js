@@ -8,11 +8,22 @@
 *    Availability: https://github.com/eivindfjeldstad/dot
 *
 ***************************************************************************************/
+
+/**
+* @private
+*/
 function isIntegerLike(prop) {
   return !isNaN(parseInt('' + prop, 10));
 }
+/**
+ * Get and set points in an object by their 'dot' path
+ * @category Bonus Modules
+ * @exports dot
+ * @public
+ */
 
-var dot = {
+
+const dot = {
   name: 'Dot',
 
   /**
@@ -22,7 +33,7 @@ var dot = {
    * @param {String} path
    * @param {Mixed} val
    * @return {Object}
-   * @api public
+   * @public
    */
   set(obj, path, val) {
     const segs = path.split('.');
@@ -64,7 +75,7 @@ var dot = {
    * @param {Object} obj
    * @param {String} path
    * @return {Mixed}
-   * @api public
+   * @public
    */
   get(obj, path) {
     const segs = path.split('.');
@@ -105,7 +116,7 @@ var dot = {
    * @param {Object} obj
    * @param {String} path
    * @return {Mixed}
-   * @api public
+   * @public
    */
   delete(obj, path) {
     const segs = path.split('.');
@@ -133,6 +144,9 @@ var dot = {
   }
 
 };
+/**
+* @private
+*/
 
 function isSafe(obj, prop) {
   if (isObject(obj)) {
@@ -145,14 +159,26 @@ function isSafe(obj, prop) {
 
   return false;
 }
+/**
+* @private
+*/
+
 
 function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
+/**
+* @private
+*/
+
 
 function isObject(obj) {
   return Object.prototype.toString.call(obj) === '[object Object]';
 }
+/**
+* @private
+*/
+
 
 function isRecord(obj) {
   return typeof obj === 'object' && obj !== null;
@@ -169,11 +195,17 @@ function isRecord(obj) {
 ***************************************************************************************/
 
 /**
+ * @module typecast
+ * @category Bonus Modules
+ */
+
+/**
  * Cast given `val` to `type`
- *
+ * @name typecast
+ * @property {casters} casters
  * @param {Mixed} val
  * @param {String} type
- * @api public
+ * @public
  */
 const typecast = function (val, type) {
   const fn = typecast.casters[type];
@@ -183,11 +215,13 @@ const typecast = function (val, type) {
 
 const casters = {
   /**
-   * Cast `val` to `String`
-   *
-   * @param {Mixed} val
-   * @api public
-   */
+  * Cast `val` to `String`
+  * @alias casters.string
+  * @memberof! typecast
+  * @param {Mixed} val
+  * @returns {string}
+  * @public
+  */
   string: function (val) {
     if (val === null || val === undefined) return '';
 
@@ -200,9 +234,11 @@ const casters = {
 
   /**
   * Cast `val` to `Number`
-  *
+  * @alias casters.number
+  * @memberof! typecast
   * @param {Mixed} val
-  * @api public
+  * @returns {number}
+  * @public
   */
   number: function (val) {
     const num = parseFloat(String(val).toString());
@@ -211,9 +247,11 @@ const casters = {
 
   /**
   * Cast `val` to a`Date`
-  *
+  * @alias casters.date
+  * @memberof! typecast
   * @param {Mixed} val
-  * @api public
+  * @returns {Date}
+  * @public
   */
   date: function (val) {
     if (!(typeof val === 'string' || typeof val === 'number' || val instanceof Date)) {
@@ -226,9 +264,11 @@ const casters = {
 
   /**
   * Cast `val` to `Array`
-  *
+  * @alias casters.array
+  * @memberof! typecast
   * @param {Mixed} val
-  * @api public
+  * @returns {Array}
+  * @public
   */
   array: function (val) {
     if (val === null || val === undefined) return [];
@@ -245,9 +285,11 @@ const casters = {
 
   /**
   * Cast `val` to `Boolean`
-  *
+  * @alias casters.boolean
+  * @memberof! typecast
   * @param {Mixed} val
-  * @api public
+  * @returns {boolean}
+  * @public
   */
   boolean: function (val) {
     return !!val && val !== 'false' && val !== '0';
@@ -255,9 +297,11 @@ const casters = {
 
   /**
   * Cast `val` to `Object`
-  *
+  * @alias casters.object
+  * @memberof! typecast
   * @param {Mixed} val
-  * @api public
+  * @returns {object}
+  * @public
   */
   object: function (val) {
     if (val === null || val === undefined) return {};
@@ -335,18 +379,14 @@ class ValidationError extends Error {
 *   Availability: https://github.com/component/type
 *
 ***************************************************************************************/
-
-/**
- * toString ref.
- */
 const toString = Object.prototype.toString;
 const funToString = Function.prototype.toString;
 /**
- * Return the type of `val`.
+ * Return the type of `val` as a string.
  *
  * @param {Mixed} val
  * @return {String}
- * @api public
+ * @public
  */
 
 function getType(val) {
@@ -384,8 +424,21 @@ function getType(val) {
   if (typeof val === 'function' && funToString.call(val).substr(0, 5) === 'class') return 'class';
   return typeof val;
 }
+
 function isWholeObject(obj) {
   return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length;
+}
+
+let localBuffer = {};
+
+try {
+  localBuffer = Buffer;
+} catch (error) {
+  Object.defineProperty(global, 'Buffer', {
+    value: ArrayBuffer,
+    enumerable: true
+  });
+  localBuffer = global.Buffer;
 }
 
 function isBuffer(obj) {
@@ -393,6 +446,18 @@ function isBuffer(obj) {
   // Accepted as Safari 5-7 (Mobile & Desktop) is at < 0.17% usage
   // https://caniuse.com/usage-table
   obj instanceof Buffer);
+}
+
+let localGlobal = {};
+
+try {
+  localGlobal = globalThis;
+} catch (error) {
+  Object.defineProperty(global, 'globalThis', {
+    value: {},
+    enumerable: true
+  });
+  localGlobal = global.globalThis;
 } // HTML Type Checking from https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object
 //Returns true if it is a DOM node
 
@@ -1217,8 +1282,11 @@ const Validators = {
 };
 
 /**
+ * @module Schema
+ */
+
+/**
  * A Schema defines the structure that objects should be validated against.
- *
  * @example
  * const post = new Schema({
  *   title: {
@@ -1235,19 +1303,6 @@ const Validators = {
  *     required: true
  *   },
  *   keywords: [{ type: String }]
- * })
- *
- * @example
- * const author = new Schema({
- *   name: {
- *     type: String,
- *     required: true
- *   },
- *   email: {
- *     type: String,
- *     required: true
- *   },
- *   posts: [post]
  * })
  *
  * @param {Object} [obj] - schema definition

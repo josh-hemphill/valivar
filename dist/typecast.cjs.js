@@ -11,11 +11,17 @@
 ***************************************************************************************/
 
 /**
+ * @module typecast
+ * @category Bonus Modules
+ */
+
+/**
  * Cast given `val` to `type`
- *
+ * @name typecast
+ * @property {casters} casters
  * @param {Mixed} val
  * @param {String} type
- * @api public
+ * @public
  */
 const typecast = function (val, type) {
   const fn = typecast.casters[type];
@@ -25,11 +31,13 @@ const typecast = function (val, type) {
 
 const casters = {
   /**
-   * Cast `val` to `String`
-   *
-   * @param {Mixed} val
-   * @api public
-   */
+  * Cast `val` to `String`
+  * @alias casters.string
+  * @memberof! typecast
+  * @param {Mixed} val
+  * @returns {string}
+  * @public
+  */
   string: function (val) {
     if (val === null || val === undefined) return '';
 
@@ -42,9 +50,11 @@ const casters = {
 
   /**
   * Cast `val` to `Number`
-  *
+  * @alias casters.number
+  * @memberof! typecast
   * @param {Mixed} val
-  * @api public
+  * @returns {number}
+  * @public
   */
   number: function (val) {
     const num = parseFloat(String(val).toString());
@@ -53,9 +63,11 @@ const casters = {
 
   /**
   * Cast `val` to a`Date`
-  *
+  * @alias casters.date
+  * @memberof! typecast
   * @param {Mixed} val
-  * @api public
+  * @returns {Date}
+  * @public
   */
   date: function (val) {
     if (!(typeof val === 'string' || typeof val === 'number' || val instanceof Date)) {
@@ -68,9 +80,11 @@ const casters = {
 
   /**
   * Cast `val` to `Array`
-  *
+  * @alias casters.array
+  * @memberof! typecast
   * @param {Mixed} val
-  * @api public
+  * @returns {Array}
+  * @public
   */
   array: function (val) {
     if (val === null || val === undefined) return [];
@@ -87,9 +101,11 @@ const casters = {
 
   /**
   * Cast `val` to `Boolean`
-  *
+  * @alias casters.boolean
+  * @memberof! typecast
   * @param {Mixed} val
-  * @api public
+  * @returns {boolean}
+  * @public
   */
   boolean: function (val) {
     return !!val && val !== 'false' && val !== '0';
@@ -97,9 +113,11 @@ const casters = {
 
   /**
   * Cast `val` to `Object`
-  *
+  * @alias casters.object
+  * @memberof! typecast
   * @param {Mixed} val
-  * @api public
+  * @returns {object}
+  * @public
   */
   object: function (val) {
     if (val === null || val === undefined) return {};

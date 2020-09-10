@@ -375,8 +375,10 @@ type validationOptions = {
     strict?: boolean;
 };
 /**
+ * @module Schema
+ */
+/**
  * A Schema defines the structure that objects should be validated against.
- *
  * @example
  * const post = new Schema({
  *   title: {
@@ -393,19 +395,6 @@ type validationOptions = {
  *     required: true
  *   },
  *   keywords: [{ type: String }]
- * })
- *
- * @example
- * const author = new Schema({
- *   name: {
- *     type: String,
- *     required: true
- *   },
- *   email: {
- *     type: String,
- *     required: true
- *   },
- *   posts: [post]
  * })
  *
  * @param {Object} [obj] - schema definition

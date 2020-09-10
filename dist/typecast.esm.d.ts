@@ -330,8 +330,10 @@ type validationOptions = {
     strict?: boolean;
 };
 /**
+ * @module Schema
+ */
+/**
  * A Schema defines the structure that objects should be validated against.
- *
  * @example
  * const post = new Schema({
  *   title: {
@@ -348,19 +350,6 @@ type validationOptions = {
  *     required: true
  *   },
  *   keywords: [{ type: String }]
- * })
- *
- * @example
- * const author = new Schema({
- *   name: {
- *     type: String,
- *     required: true
- *   },
- *   email: {
- *     type: String,
- *     required: true
- *   },
- *   posts: [post]
  * })
  *
  * @param {Object} [obj] - schema definition
@@ -559,11 +548,16 @@ type messageOpts = boolean | number | string | {
 type messageFunction = (prop: string, ctx: obj, ...options: messageOpts[]) => string;
 type argsTypes = CallableFunction | boolean | string | number | rec | arr | RegExp;
 /**
+ * @module typecast
+ * @category Bonus Modules
+ */
+/**
  * Cast given `val` to `type`
- *
+ * @name typecast
+ * @property {casters} casters
  * @param {Mixed} val
  * @param {String} type
- * @api public
+ * @public
  */
 declare const typecast$0: {
     (val: unknown, type: keyof typecasters): ReturnType<typecastFunction>;

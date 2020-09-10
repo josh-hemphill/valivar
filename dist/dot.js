@@ -12,11 +12,22 @@
 	*    Availability: https://github.com/eivindfjeldstad/dot
 	*
 	***************************************************************************************/
+
+	/**
+	* @private
+	*/
 	function isIntegerLike(prop) {
 	  return !isNaN(parseInt('' + prop, 10));
 	}
+	/**
+	 * Get and set points in an object by their 'dot' path
+	 * @category Bonus Modules
+	 * @exports dot
+	 * @public
+	 */
 
-	var dot = {
+
+	const dot = {
 	  name: 'Dot',
 
 	  /**
@@ -26,7 +37,7 @@
 	   * @param {String} path
 	   * @param {Mixed} val
 	   * @return {Object}
-	   * @api public
+	   * @public
 	   */
 	  set(obj, path, val) {
 	    const segs = path.split('.');
@@ -68,7 +79,7 @@
 	   * @param {Object} obj
 	   * @param {String} path
 	   * @return {Mixed}
-	   * @api public
+	   * @public
 	   */
 	  get(obj, path) {
 	    const segs = path.split('.');
@@ -109,7 +120,7 @@
 	   * @param {Object} obj
 	   * @param {String} path
 	   * @return {Mixed}
-	   * @api public
+	   * @public
 	   */
 	  delete(obj, path) {
 	    const segs = path.split('.');
@@ -137,6 +148,9 @@
 	  }
 
 	};
+	/**
+	* @private
+	*/
 
 	function isSafe(obj, prop) {
 	  if (isObject(obj)) {
@@ -149,14 +163,26 @@
 
 	  return false;
 	}
+	/**
+	* @private
+	*/
+
 
 	function hasOwnProperty(obj, prop) {
 	  return Object.prototype.hasOwnProperty.call(obj, prop);
 	}
+	/**
+	* @private
+	*/
+
 
 	function isObject(obj) {
 	  return Object.prototype.toString.call(obj) === '[object Object]';
 	}
+	/**
+	* @private
+	*/
+
 
 	function isRecord(obj) {
 	  return typeof obj === 'object' && obj !== null;
