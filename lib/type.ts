@@ -10,18 +10,17 @@
 
 import { obj } from './tsPrimitives';
 
-/**
- * toString ref.
- */
 const toString = Object.prototype.toString;
 const funToString = Function.prototype.toString;
 export default getType;
+
+
 /**
- * Return the type of `val`.
+ * Return the type of `val` as a string.
  *
  * @param {Mixed} val
  * @return {String}
- * @api public
+ * @public
  */
 export function getType(val: unknown): string {
 	switch (toString.call(val)) {
@@ -50,7 +49,7 @@ export function getType(val: unknown): string {
 	return typeof val;
 }
 
-export function isWholeObject(obj: unknown): obj is obj {
+function isWholeObject(obj: unknown): obj is obj {
 	return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length; 
 }
 

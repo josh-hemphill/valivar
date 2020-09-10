@@ -1,0 +1,13 @@
+.logo > .image > img {
+	height: 40px;
+	width: 40px;
+	margin: 5px 0px 5px 0px;
+}
+.logo {
+	width: 40%;
+	align-items: flex-start;
+	justify-items: center;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+}

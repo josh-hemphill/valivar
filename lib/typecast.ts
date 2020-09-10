@@ -8,16 +8,21 @@
 *
 ***************************************************************************************/
 
-import { typecast, typecasters, typecastFunction, empty, rec } from './tsPrimitives';
+import { typecasters, typecastFunction, empty, rec } from './tsPrimitives';
+
 
 /**
+ * @module typecast
+ * @category Bonus Modules
+ */
+/**
  * Cast given `val` to `type`
- *
+ * @name typecast
+ * @property {casters} casters
  * @param {Mixed} val
  * @param {String} type
- * @api public
+ * @public
  */
-
 const typecast = function(val: unknown, type: keyof typecasters): ReturnType<typecastFunction> {
 	const fn = typecast.casters[type];
 	if (typeof fn !== 'function') throw new Error('cannot cast to ' + type);
@@ -25,12 +30,14 @@ const typecast = function(val: unknown, type: keyof typecasters): ReturnType<typ
 };
 
 const casters: typecasters = {
-/**
- * Cast `val` to `String`
- *
- * @param {Mixed} val
- * @api public
- */
+	/**
+	* Cast `val` to `String`
+	* @alias casters.string
+	* @memberof! typecast
+	* @param {Mixed} val
+	* @returns {string}
+	* @public
+	*/
 	string: function(val: unknown): string {
 		if (val === null || val === undefined) return '';
 		if (typeof val === 'object' && val !== null && Object.entries(val).length) {
@@ -40,11 +47,13 @@ const casters: typecasters = {
 	},
 
 	/**
- * Cast `val` to `Number`
- *
- * @param {Mixed} val
- * @api public
- */
+	* Cast `val` to `Number`
+	* @alias casters.number
+	* @memberof! typecast
+	* @param {Mixed} val
+	* @returns {number}
+	* @public
+	*/
 	number: function(val: unknown): number {
 		const num = parseFloat(String(val).toString());
 		return isNaN(num)
@@ -53,11 +62,13 @@ const casters: typecasters = {
 	},
 
 	/**
- * Cast `val` to a`Date`
- *
- * @param {Mixed} val
- * @api public
- */
+	* Cast `val` to a`Date`
+	* @alias casters.date
+	* @memberof! typecast
+	* @param {Mixed} val
+	* @returns {Date}
+	* @public
+	*/
 	date: function(val: unknown) {
 		if (!(typeof val === 'string' || typeof val === 'number' || val instanceof Date)) {
 			return new Date(0);
@@ -70,11 +81,13 @@ const casters: typecasters = {
 	},
 
 	/**
- * Cast `val` to `Array`
- *
- * @param {Mixed} val
- * @api public
- */
+	* Cast `val` to `Array`
+	* @alias casters.array
+	* @memberof! typecast
+	* @param {Mixed} val
+	* @returns {Array}
+	* @public
+	*/
 	array: function(val: unknown) {
 		if (val === null || val === undefined) return [];
 		if (val instanceof Array) return val;
@@ -89,21 +102,25 @@ const casters: typecasters = {
 	},
 
 	/**
- * Cast `val` to `Boolean`
- *
- * @param {Mixed} val
- * @api public
- */
+	* Cast `val` to `Boolean`
+	* @alias casters.boolean
+	* @memberof! typecast
+	* @param {Mixed} val
+	* @returns {boolean}
+	* @public
+	*/
 	boolean: function(val: unknown) {
 		return !!val && val !== 'false' && val !== '0';
 	},
 
 	/**
- * Cast `val` to `Object`
- *
- * @param {Mixed} val
- * @api public
- */
+	* Cast `val` to `Object`
+	* @alias casters.object
+	* @memberof! typecast
+	* @param {Mixed} val
+	* @returns {object}
+	* @public
+	*/
 	object: function(val: unknown): NonNullable<rec> | typeof empty {
 		if (val === null || val === undefined) return {};
 		if (Array.isArray(val)) return Object.fromEntries(Object.entries(val));
@@ -117,7 +134,15 @@ const casters: typecasters = {
 		}
 		return obj;
 	},
-
+	/**
+	* Any custom typecast function.
+	* Cast `val` to the type of the functions namesake
+	* @alias casters.[any]
+	* @memberof! typecast
+	* @param {Mixed} val
+	* @returns {Mixed}
+	* @public
+	*/
 };
 
 typecast.casters = casters;

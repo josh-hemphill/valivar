@@ -1,4 +1,3 @@
-// import { getBabelOutputPlugin } from '@rollup/plugin-babel';
 export const allModuleTypes = (dist, name) => ([
 	{
 		file: `${dist}${name}.cjs.js`,

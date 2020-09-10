@@ -8,11 +8,21 @@
 ***************************************************************************************/
 
 import { rec, obj, fromString, key } from './tsPrimitives';
+
+/**
+* @private
+*/
 function isIntegerLike(prop: unknown): prop is number {
 	return !isNaN(parseInt('' + prop, 10));
 }
 
-export default {
+/**
+ * Get and set points in an object by their 'dot' path
+ * @category Bonus Modules
+ * @exports dot
+ * @public
+ */
+const dot = {
 	name: 'Dot',
 
 	/**
@@ -22,7 +32,7 @@ export default {
 	 * @param {String} path
 	 * @param {Mixed} val
 	 * @return {Object}
-	 * @api public
+	 * @public
 	 */
 	set(obj: obj, path: string, val: unknown): obj {
 		const segs = path.split('.');
@@ -64,7 +74,7 @@ export default {
 	 * @param {Object} obj
 	 * @param {String} path
 	 * @return {Mixed}
-	 * @api public
+	 * @public
 	 */
 	get(obj: obj, path: string): unknown {
 		const segs = <fromString[]> path.split('.');
@@ -103,7 +113,7 @@ export default {
 	 * @param {Object} obj
 	 * @param {String} path
 	 * @return {Mixed}
-	 * @api public
+	 * @public
 	 */
 	delete(obj: obj, path: string): void {
 		const segs = path.split('.');
@@ -129,6 +139,11 @@ export default {
 		}
 	},
 };
+export default dot;
+
+/**
+* @private
+*/
 function isSafe(obj: unknown, prop: NonNullable<fromString>): obj is rec | unknown[] {
 	if (isObject(obj)) {
 		return obj[prop] === undefined || hasOwnProperty(obj, prop);
@@ -141,12 +156,23 @@ function isSafe(obj: unknown, prop: NonNullable<fromString>): obj is rec | unkno
 	return false;
 }
 
+/**
+* @private
+*/
 function hasOwnProperty(obj: rec, prop: PropertyKey): prop is keyof rec {
 	return Object.prototype.hasOwnProperty.call(obj, prop);
 }
+
+/**
+* @private
+*/
 function isObject(obj: unknown): obj is rec {
 	return Object.prototype.toString.call(obj) === '[object Object]';
 }
+
+/**
+* @private
+*/
 function isRecord(obj:unknown): obj is Record<string | number, unknown> {
 	return typeof obj === 'object' && obj !== null;
 }
