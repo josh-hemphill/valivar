@@ -25,10 +25,10 @@
 		"build": "rollup -c config/rollup.config.js",
 		"validate": "run-s test lint",
 		"check-release-token": "if [ -z ${CONVENTIONAL_GITHUB_RELEASER_TOKEN+x} ]; then echo 'Please set a release token for github deployment'; exit 1; fi",
-		"prerelease": "npm run check-release-token && git checkout master && git pull origin master && npm i && run-s validate && git-authors-cli && git add .",
+		"prerelease": "npm run check-release-token && git checkout latest && git pull origin latest && npm i && run-s validate && git-authors-cli && git add .",
 		"release": "standard-version -a",
 		"postrelease": "run-s release:*",
-		"release:tags": "git push --follow-tags origin master",
+		"release:tags": "git push --follow-tags origin latest",
 		"release:github": "conventional-github-releaser -p angular && export CONVENTIONAL_GITHUB_RELEASER_TOKEN=''",
 		"ci:validate": "rm -rf node_modules && npm ci && npm run validate",
 		"prepublishOnly": "npm run ci:validate && npm run build"
