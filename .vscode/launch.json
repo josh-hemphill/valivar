@@ -30,6 +30,22 @@
 				"-c"
 			],
 			"port": 9229
+		},
+		{
+			"name": "Build Release",
+			"type": "node",
+			"request": "launch",
+			"console": "integratedTerminal",
+			"internalConsoleOptions": "neverOpen",
+			"runtimeArgs": [
+				"--inspect-brk",
+				"./config/release.js"
+			],
+			"port": 9229,
+			"skipFiles": [
+				"${workspaceRoot}/node_modules/**/*.js",
+				"<node_internals>/**/*.js"
+			]
 		}
 	]
 }
