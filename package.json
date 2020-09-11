@@ -24,13 +24,14 @@
 		"guard"
 	],
 	"scripts": {
-		"build-release": "node ./config/release.js",
 		"test": "npx jest -c config/jest.config.js -b --forceExit",
 		"test-cov": "npx jest -c config/jest.config.js --coverage --runInBand --forceExit",
 		"docs": "jsdoc -c config/jsdoc.js",
 		"srv-docs": "live-server docs || npx live-server docs",
 		"lint": "eslint lib test",
 		"build": "rollup -c config/rollup.config.js",
+		"build-release": "node ./config/release.js",
+		"build-release-dry-run": "node ./config/release.js -d",
 		"validate": "run-s test lint",
 		"ci:validate": "rm -rf node_modules && npm ci && npm run validate",
 		"prepublishOnly": "npm run ci:validate && npm run build"

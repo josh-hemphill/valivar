@@ -15,7 +15,7 @@ const exec = util.promisify(rawExec);
 const conventionalGithubReleaser = util.promisify(require('conventional-github-releaser'));
 const tmp = require('tmp');
 const SSHConfig = require('ssh-config');
-
+const dry_run_args = ['--dry-run','-d'];
 function toPosix(str, base = false) {
 	return path.posix.join(
 		...(base ? [] : os.homedir().split(/\/|\\+/g)),
@@ -112,8 +112,10 @@ inquirer
 				'npm i',
 				'npm run validate',
 				'git add .',
-				'standard-version -a',
-				`GIT_SSH_COMMAND='ssh -i ${toPosix(tmpobj.name,true)} -o IdentitiesOnly=yes'git push --follow-tags origin latest`,
+				process.argv.some((x) => dry_run_args.includes(x)) ? 
+					'echo "Skipping Version Bump: DRY RUN"' : 
+					'standard-version -a',
+				`GIT_SSH_COMMAND='ssh -i ${toPosix(tmpobj.name,true)} -o IdentitiesOnly=yes' git push --follow-tags origin latest`,
 			]);
 			fs.writeFileSync(tmpobj.name,'');
 			tmpobj.removeCallback();
