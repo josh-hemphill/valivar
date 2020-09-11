@@ -113,7 +113,7 @@ inquirer
 				'npm run validate',
 				'git add .',
 				'standard-version -a',
-				'git push --follow-tags origin latest',
+				`GIT_SSH_COMMAND='ssh -i ${toPosix(tmpobj.name,true)} -o IdentitiesOnly=yes'git push --follow-tags origin latest`,
 			]);
 			fs.writeFileSync(tmpobj.name,'');
 			tmpobj.removeCallback();

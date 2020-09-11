@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.4](https://github.com/josh-hemphill/valivar/compare/v6.0.3...v6.0.4) (2020-09-11)
+
 ### [6.0.3](https://github.com/josh-hemphill/valivar/compare/v6.0.2...v6.0.3) (2020-09-11)
 
 
