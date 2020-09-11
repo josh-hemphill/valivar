@@ -416,6 +416,8 @@
 
 	  if (val === null) return 'null';
 	  if (val === undefined) return 'undefined';
+	  if (!this?.Buffer) this.Buffer = ArrayBuffer;
+	  if (!this.globalThis) this.globalThis = {};
 	  if (typeof val === 'number' && isNaN(val)) return 'nan';
 	  if (typeof val === 'object' && isElement(val)) return 'element';
 	  if (typeof val === 'object' && isNode(val)) return 'node';
@@ -427,58 +429,34 @@
 
 	  if (typeof val === 'function' && funToString.call(val).substr(0, 5) === 'class') return 'class';
 	  return typeof val;
-	}
 
-	function isWholeObject(obj) {
-	  return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length;
-	}
+	  function isWholeObject(obj) {
+	    return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length;
+	  }
 
-	let localBuffer = {};
-
-	try {
-	  localBuffer = Buffer;
-	} catch (error) {
-	  Object.defineProperty(global, 'Buffer', {
-	    value: ArrayBuffer,
-	    enumerable: true
-	  });
-	  localBuffer = global.Buffer;
-	}
-
-	function isBuffer(obj) {
-	  return !!( // Does not support Safari 5-7 (missing Object.prototype.constructor)
-	  // Accepted as Safari 5-7 (Mobile & Desktop) is at < 0.17% usage
-	  // https://caniuse.com/usage-table
-	  obj instanceof Buffer);
-	}
-
-	let localGlobal = {};
-
-	try {
-	  localGlobal = globalThis;
-	} catch (error) {
-	  Object.defineProperty(global, 'globalThis', {
-	    value: {},
-	    enumerable: true
-	  });
-	  localGlobal = global.globalThis;
-	} // HTML Type Checking from https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object
-	//Returns true if it is a DOM node
+	  function isBuffer(obj) {
+	    return !!( // Does not support Safari 5-7 (missing Object.prototype.constructor)
+	    // Accepted as Safari 5-7 (Mobile & Desktop) is at < 0.17% usage
+	    // https://caniuse.com/usage-table
+	    obj instanceof Buffer);
+	  } // HTML Type Checking from https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object
+	  //Returns true if it is a DOM node
 
 
-	function isNode(o) {
-	  const globalKey = 'Node';
-	  return isGlobal(globalKey) ? o instanceof globalThis[globalKey] : o && isWholeObject(o) && typeof o.nodeType === 'number' && typeof o.nodeName === 'string';
-	} //Returns true if it is a DOM element
+	  function isNode(o) {
+	    const globalKey = 'Node';
+	    return isGlobal(globalKey) ? o instanceof globalThis[globalKey] : o && isWholeObject(o) && typeof o.nodeType === 'number' && typeof o.nodeName === 'string';
+	  } //Returns true if it is a DOM element
 
 
-	function isElement(o) {
-	  const globalKey = 'HTMLElement';
-	  return isGlobal(globalKey) ? o instanceof globalThis[globalKey] : o && isWholeObject(o) && o.nodeType === 1 && typeof o.nodeName === 'string';
-	}
+	  function isElement(o) {
+	    const globalKey = 'HTMLElement';
+	    return isGlobal(globalKey) ? o instanceof globalThis[globalKey] : o && isWholeObject(o) && o.nodeType === 1 && typeof o.nodeName === 'string';
+	  }
 
-	function isGlobal(name) {
-	  return Object.prototype.hasOwnProperty.call(globalThis, name);
+	  function isGlobal(name) {
+	    return Object.prototype.hasOwnProperty.call(globalThis, name);
+	  }
 	}
 
 	const typeOf = getType;
@@ -575,7 +553,7 @@
 	function join(path, prefix) {
 	  return prefix ? `${prefix.toString()}.${path.toString()}` : path.toString();
 	}
-	function isWholeObject$1(obj) {
+	function isWholeObject(obj) {
 	  return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length;
 	}
 	function isLimitedKey(prop) {
@@ -1409,7 +1387,7 @@
 	    let nested = false; // Check for nested objects
 
 	    for (const key of keys) {
-	      if (isWholeObject$1(prop) && typeof prop[key] === 'function') continue;
+	      if (isWholeObject(prop) && typeof prop[key] === 'function') continue;
 	      prop.type(Object);
 	      nested = true;
 	      break;
@@ -1423,7 +1401,7 @@
 	          return this.path(join(key, path), rule);
 	        }
 
-	        if (isWholeObject$1(prop)) {
+	        if (isWholeObject(prop)) {
 	          const pathFn = prop[key];
 
 	          if (typeof pathFn === 'function') {
@@ -1445,7 +1423,7 @@
 
 	  typecast(obj) {
 	    for (const [path, prop] of Object.entries(this.props)) {
-	      if (isWholeObject$1(obj)) {
+	      if (isWholeObject(obj)) {
 	        enumerate(path, obj, (key, value) => {
 	          if (value === null || value === undefined) return;
 	          const cast = prop.typecast(value);
@@ -1471,7 +1449,7 @@
 	    walk(obj, (path, prop, isCatchall = false) => {
 	      if (isLimitedKey(prop) && this.props[prop]) return true;
 	      if (isCatchall) return false;
-	      if (isWholeObject$1(obj)) dot.delete(obj, path);
+	      if (isWholeObject(obj)) dot.delete(obj, path);
 	      return false;
 	    });
 	    return this;

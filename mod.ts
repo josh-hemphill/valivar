@@ -1,8 +1,8 @@
-// @deno-types="./dist/dot.d.ts"
-import { dot } from './dist/dot.js';
-// @deno-types="./dist/valivar.d.ts"
-import { Schema as valivar } from './dist/valivar.js';
-// @deno-types="./dist/typecast.d.ts"
-import { typecast } from './dist/typecast.js';
+// @deno-types="./dist/dot.esm.d.ts"
+import { dot } from './dist/dot.esm.js';
+// @deno-types="./dist/valivar.esm.d.ts"
+import { Schema as valivar } from './dist/valivar.esm.js';
+// @deno-types="./dist/typecast.esm.d.ts"
+import { typecast } from './dist/typecast.esm.js';
 
 export {dot, valivar, typecast};

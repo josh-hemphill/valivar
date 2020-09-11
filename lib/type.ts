@@ -22,7 +22,7 @@ export default getType;
  * @return {String}
  * @public
  */
-export function getType(val: unknown): string {
+export function getType(this: obj, val: unknown): string {
 	switch (toString.call(val)) {
 	case '[object Date]': return 'date';
 	case '[object RegExp]': return 'regexp';
@@ -34,6 +34,10 @@ export function getType(val: unknown): string {
 
 	if (val === null) return 'null';
 	if (val === undefined) return 'undefined';
+
+	if (!this?.Buffer) this.Buffer = ArrayBuffer;
+	if (!this.globalThis) this.globalThis = {};
+
 	if (typeof val === 'number' && isNaN(val)) return 'nan';
 	if (typeof val === 'object' && isElement(val)) return 'element';
 	if (typeof val === 'object' && isNode(val)) return 'node';
@@ -47,61 +51,40 @@ export function getType(val: unknown): string {
 	if (typeof val === 'function' && funToString.call(val).substr(0,5) === 'class') return 'class';
 
 	return typeof val;
-}
 
-function isWholeObject(obj: unknown): obj is obj {
-	return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length; 
-}
+	function isWholeObject(obj: unknown): obj is obj {
+		return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length; 
+	}
 
-
-let localBuffer = {};
-try {
-	localBuffer = Buffer;
-} catch (error) {
-	Object.defineProperty(global, 'Buffer',{
-		value: ArrayBuffer,
-		enumerable:true,
-	});
-	localBuffer = global.Buffer;
-}
-function isBuffer(obj: unknown): boolean {
-	return !!(
+	function isBuffer(obj: unknown): boolean {
+		return !!(
 		// Does not support Safari 5-7 (missing Object.prototype.constructor)
 		// Accepted as Safari 5-7 (Mobile & Desktop) is at < 0.17% usage
 		// https://caniuse.com/usage-table
-		obj instanceof Buffer
-	);
-}
+			obj instanceof Buffer
+		);
+	}
 
-let localGlobal = {};
-try {
-	localGlobal = globalThis;
-} catch (error) {
-	Object.defineProperty(global, 'globalThis',{
-		value:{},
-		enumerable:true,
-	});
-	localGlobal = global.globalThis;
-}
+	// HTML Type Checking from https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object
+	//Returns true if it is a DOM node
+	function isNode(o: unknown): boolean {
+		const globalKey = 'Node';
+		return (
+			isGlobal(globalKey) ? o instanceof globalThis[globalKey] : 
+				o && isWholeObject(o) && typeof o.nodeType === 'number' && typeof o.nodeName==='string'
+		);
+	}
+	//Returns true if it is a DOM element
+	function isElement(o: unknown): boolean {
+		const globalKey = 'HTMLElement';
+		return (
+			isGlobal(globalKey) ? o instanceof globalThis[globalKey] : 
+				o && isWholeObject(o) && o.nodeType === 1 && typeof o.nodeName==='string'
+		);
+	}
 
-// HTML Type Checking from https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object
-//Returns true if it is a DOM node
-function isNode(o: unknown): boolean {
-	const globalKey = 'Node';
-	return (
-		isGlobal(globalKey) ? o instanceof globalThis[globalKey] : 
-			o && isWholeObject(o) && typeof o.nodeType === 'number' && typeof o.nodeName==='string'
-	);
-}
-//Returns true if it is a DOM element
-function isElement(o: unknown): boolean {
-	const globalKey = 'HTMLElement';
-	return (
-		isGlobal(globalKey) ? o instanceof globalThis[globalKey] : 
-			o && isWholeObject(o) && o.nodeType === 1 && typeof o.nodeName==='string'
-	);
-}
+	function isGlobal(name:string): name is keyof typeof globalThis {
+		return Object.prototype.hasOwnProperty.call(globalThis, name);
+	}
 
-function isGlobal(name:string): name is keyof typeof globalThis {
-	return Object.prototype.hasOwnProperty.call(globalThis, name);
 }
