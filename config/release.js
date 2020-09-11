@@ -106,6 +106,7 @@ inquirer
 			fs.writeFileSync(tmpobj.name,key);
 
 			await execChain([
+				'rm -rf dist',
 				'npm run build',
 				'git checkout latest',
 				`GIT_SSH_COMMAND='ssh -i ${toPosix(tmpobj.name,true)} -o IdentitiesOnly=yes' git pull origin latest`,
