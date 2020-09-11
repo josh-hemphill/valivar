@@ -1,9 +1,12 @@
 import { getType } from '../lib/type';
 let localGlobal = {};
 try {
+	// eslint-disable-next-line no-undef
 	localGlobal = globalThis;
 } catch (error) {
+	// eslint-disable-next-line no-undef
 	global.globalThis = {};
+	// eslint-disable-next-line no-undef
 	localGlobal = global.globalThis;
 }
 describe('Types',() => {
