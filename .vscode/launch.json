@@ -39,7 +39,8 @@
 			"internalConsoleOptions": "neverOpen",
 			"runtimeArgs": [
 				"--inspect-brk",
-				"./config/release.js"
+				"./config/release.js",
+				"-d"
 			],
 			"port": 9229,
 			"skipFiles": [
