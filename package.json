@@ -1,7 +1,7 @@
 {
 	"name": "valivar",
 	"description": "Javascript/Typescript schema-based validation and sanitation",
-	"version": "6.0.4",
+	"version": "6.1.0",
 	"contributors": [
 		{
 			"name": "Joshua Hemphill",

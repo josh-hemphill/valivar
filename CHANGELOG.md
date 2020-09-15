@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.1.0](https://github.com/josh-hemphill/valivar/compare/v6.0.4...v6.1.0) (2020-09-15)
+
+
+### Features
+
+* **build:** release manager to save keys ([367baec](https://github.com/josh-hemphill/valivar/commit/367baec45cd47ad7b19955ea3387fba8c69af5e3))
+
+
+### Bug Fixes
+
+* **release:** crypto config ([570a2f1](https://github.com/josh-hemphill/valivar/commit/570a2f105fd29b51749e3fcfc207a8983632fac4))
+* **release:** dry run skip release ([151d12d](https://github.com/josh-hemphill/valivar/commit/151d12d43dce2341dfc97cc5646250efa4b37130))
+* deno imports ([5f494dc](https://github.com/josh-hemphill/valivar/commit/5f494dc496be4d16dbdc41db146b4c837864f70e))
+* deno imports typo ([91d11ab](https://github.com/josh-hemphill/valivar/commit/91d11ab2639a05506d421af0c77a31bcc1f436bf))
+* global type assignments ([265002d](https://github.com/josh-hemphill/valivar/commit/265002d3f2b05ac0e98eb85195e381f32a9d2d51))
+
 ### [6.0.4](https://github.com/josh-hemphill/valivar/compare/v6.0.3...v6.0.4) (2020-09-11)
 
 ### [6.0.3](https://github.com/josh-hemphill/valivar/compare/v6.0.2...v6.0.3) (2020-09-11)
