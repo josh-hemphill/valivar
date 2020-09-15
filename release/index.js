@@ -119,7 +119,7 @@ inquirer
 			]);
 			fs.writeFileSync(tmpobj.name,'');
 			tmpobj.removeCallback();
-			if (isDryRun) {
+			if (!isDryRun) {
 				await conventionalGithubReleaser(auth, {
 					preset: 'angular',
 				});
