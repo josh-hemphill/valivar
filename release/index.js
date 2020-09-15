@@ -4,7 +4,14 @@ const {fail,execChain,toPosix} = require('./utils');
 const config = require('./config');
 const crypto = require('./crypto').crypto;
 
-config.shell = fs.statSync(config.defaultShell).isFile() ? config.defaultShell : '/bin/bash';
+const fileExists = (path) => {try {
+	fs.accessSync(path);
+	return true;
+} catch (err) {
+	return false;
+}};
+
+config.shell = fileExists(config.defaultShell) ? config.defaultShell : '/bin/bash';
 const dry_run_args = ['--dry-run','-d'];
 const isDryRun = process.argv.some((x) => dry_run_args.includes(x));
 config.sshConfig = toPosix(config.sshConfig);
@@ -15,12 +22,12 @@ const state = {
 		url: config.githubApiUrl,
 	},
 };
-const deployStorageStats = fs.statSync(config.deployStorage);
-if(!deployStorageStats.isFile()) {
+const deployStorageStats = fileExists(config.deployStorage) ? fs.statSync(config.deployStorage) : false;
+if(!deployStorageStats?.size) {
 	fs.writeFileSync(config.deployStorage,'',{mode:0o600});
 }
 const tempTokenFileDesc = fs.openSync(config.deployStorage,'r+',0o600);
-let tempkey = Buffer.alloc(deployStorageStats.size);
+let tempkey = Buffer.alloc(deployStorageStats?.size || 2048);
 fs.readSync(tempTokenFileDesc, tempkey);
 tempkey = tempkey.toString();
 
@@ -29,7 +36,7 @@ inquirer
 		type:'confirm',
 		name: 'reuseToken',
 		message: 'Token Detected. Would you like to decrypt the stored token and use that?\n',
-		when: () => !!tempkey.length,
+		when: () => !!deployStorageStats?.size,
 		default: true,
 	},{
 		type:'password',
@@ -37,7 +44,7 @@ inquirer
 		message: 'Please enter the password to decrypt your token\n',
 		mask: '*',
 		when: (vals) => vals.reuseToken,
-		validate: (val) => /[\t\n \r]+/.test(val) || 'No whitespace in passwords',
+		validate: (val) => !/[\t\n \r]+/.test(val) || 'No whitespace in passwords',
 	},{
 		type:'password',
 		name: 'token',
@@ -57,7 +64,7 @@ inquirer
 		message: 'Please enter a password for encrypting your token:\n',
 		mask: '*',
 		when: (vals)=>!vals.reuseToken && vals.storeToken,
-		validate: (val) => /[\t\n \r]+/.test(val) || 'No whitespace in passwords',
+		validate: (val) => !/[\t\n \r]+/.test(val) || 'No whitespace in passwords',
 	},{
 		type:'input',
 		name: 'sshConfigFile',
@@ -103,12 +110,12 @@ inquirer
 				'rm -rf dist',
 				'npm run build',
 				'git checkout latest',
-				`GIT_SSH_COMMAND='ssh -i ${toPosix(tmpobj.name,true)} -o IdentitiesOnly=yes' git pull origin latest`,
+				`env GIT_SSH_COMMAND='ssh -i ${toPosix(tmpobj.name,true)} -o IdentitiesOnly=yes' git pull origin latest`,
 				'npm i',
 				'npm run validate',
 				'git add .',
 				isDryRun ? 'echo "Skipping Version Bump: DRY RUN"' : 'standard-version -a',
-				`GIT_SSH_COMMAND='ssh -i ${toPosix(tmpobj.name,true)} -o IdentitiesOnly=yes' git push --follow-tags origin latest`,
+				`env GIT_SSH_COMMAND='ssh -i ${toPosix(tmpobj.name,true)} -o IdentitiesOnly=yes' git push --follow-tags origin latest`,
 			]);
 			fs.writeFileSync(tmpobj.name,'');
 			tmpobj.removeCallback();

@@ -416,8 +416,12 @@
 
 	  if (val === null) return 'null';
 	  if (val === undefined) return 'undefined';
-	  if (!this?.Buffer) this.Buffer = ArrayBuffer;
-	  if (!this.globalThis) this.globalThis = {};
+
+	  if (this) {
+	    if (!this?.Buffer) this.Buffer = ArrayBuffer;
+	    if (!this.globalThis) this.globalThis = {};
+	  }
+
 	  if (typeof val === 'number' && isNaN(val)) return 'nan';
 	  if (typeof val === 'object' && isElement(val)) return 'element';
 	  if (typeof val === 'object' && isNode(val)) return 'node';

@@ -11,9 +11,12 @@
 			"runtimeArgs": [
 				"--inspect-brk",
 				"${workspaceFolder}/node_modules/jest/bin/jest.js",
+				"-c",
+				"config/jest.config.js",
 				"--runInBand",
 				"--detectOpenHandles",
-				"--bail"
+				"--bail",
+				"type"
 			],
 			"console": "integratedTerminal",
 			"internalConsoleOptions": "neverOpen",
@@ -39,7 +42,7 @@
 			"internalConsoleOptions": "neverOpen",
 			"runtimeArgs": [
 				"--inspect-brk",
-				"./config/release.js",
+				"./release",
 				"-d"
 			],
 			"port": 9229,

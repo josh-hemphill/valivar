@@ -14,6 +14,12 @@ const toString = Object.prototype.toString;
 const funToString = Function.prototype.toString;
 export default getType;
 
+const localGlobal = {
+	Buffer: typeof Buffer !== 'undefined' ? Buffer : ArrayBuffer,
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	globalThis: typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : {},
+};
 
 /**
  * Return the type of `val` as a string.
@@ -22,7 +28,7 @@ export default getType;
  * @return {String}
  * @public
  */
-export function getType(this: obj, val: unknown): string {
+export function getType(val: unknown): string {
 	switch (toString.call(val)) {
 	case '[object Date]': return 'date';
 	case '[object RegExp]': return 'regexp';
@@ -34,11 +40,6 @@ export function getType(this: obj, val: unknown): string {
 
 	if (val === null) return 'null';
 	if (val === undefined) return 'undefined';
-
-	if (this) {
-		if (!this?.Buffer) this.Buffer = ArrayBuffer;
-		if (!this.globalThis) this.globalThis = {};
-	}
 
 	if (typeof val === 'number' && isNaN(val)) return 'nan';
 	if (typeof val === 'object' && isElement(val)) return 'element';
@@ -63,7 +64,7 @@ export function getType(this: obj, val: unknown): string {
 		// Does not support Safari 5-7 (missing Object.prototype.constructor)
 		// Accepted as Safari 5-7 (Mobile & Desktop) is at < 0.17% usage
 		// https://caniuse.com/usage-table
-			obj instanceof Buffer
+			obj instanceof localGlobal.Buffer
 		);
 	}
 
@@ -72,7 +73,7 @@ export function getType(this: obj, val: unknown): string {
 	function isNode(o: unknown): boolean {
 		const globalKey = 'Node';
 		return (
-			isGlobal(globalKey) ? o instanceof globalThis[globalKey] : 
+			Object.prototype.hasOwnProperty.call(localGlobal.globalThis, globalKey) ? o instanceof localGlobal.globalThis[globalKey] : 
 				o && isWholeObject(o) && typeof o.nodeType === 'number' && typeof o.nodeName==='string'
 		);
 	}
@@ -80,13 +81,9 @@ export function getType(this: obj, val: unknown): string {
 	function isElement(o: unknown): boolean {
 		const globalKey = 'HTMLElement';
 		return (
-			isGlobal(globalKey) ? o instanceof globalThis[globalKey] : 
+			Object.prototype.hasOwnProperty.call(localGlobal.globalThis, globalKey) ? o instanceof localGlobal.globalThis[globalKey] : 
 				o && isWholeObject(o) && o.nodeType === 1 && typeof o.nodeName==='string'
 		);
-	}
-
-	function isGlobal(name:string): name is keyof typeof globalThis {
-		return Object.prototype.hasOwnProperty.call(globalThis, name);
 	}
 
 }
