@@ -5,9 +5,9 @@
 		"declarationDir": "./dist",
 		"composite": true,
 		"target": "es6",
-		"module": "esnext",
+		"module": "ES2020",
 		"lib": [
-			"esnext"
+			"ES2020"
 		],
 		"esModuleInterop": true,
 		"allowJs": true,

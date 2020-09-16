@@ -23,18 +23,6 @@
 			"port": 9229
 		},
 		{
-			"name": "Build Rollup",
-			"type": "node",
-			"request": "launch",
-			"outputCapture": "std",
-			"runtimeArgs": [
-				"--inspect-brk",
-				"../rollup/dist/bin/rollup.js",
-				"-c"
-			],
-			"port": 9229
-		},
-		{
 			"name": "Build Release",
 			"type": "node",
 			"request": "launch",
