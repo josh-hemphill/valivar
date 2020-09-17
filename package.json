@@ -37,6 +37,10 @@
 		"prepublishOnly": "npm run ci:validate && npm run build"
 	},
 	"main": "dist/valivar.cjs.js",
+	"exports": {
+		"import":"dist/valivar.esm.js",
+		"require":"dist/valivar.cjs.js"
+	},
 	"browser": "dist/valivar.esm.js",
 	"unpkg": "dist/valivar.js",
 	"bugs": {
