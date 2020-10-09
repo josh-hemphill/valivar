@@ -137,8 +137,8 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { dot } from './dot';
-import { typecast } from './typecast';
+            <pre class="prettyprint source linenums"><code>import { dot as Dot } from './dot';
+import { typecast as Typecast } from './typecast';
 import Property from './property';
 import Messages from './messages';
 import Validators, {ValidatorProps} from './validators';
@@ -147,6 +147,9 @@ import { key, obj, rule, typecasters, hookFunction, messageOpts } from './tsPrim
 import { walk, enumerate, join, assign, isWholeObject, isRule, isLimitedKey } from './utils';
 
 type validationOptions = {typecast?: boolean; strip?: boolean; strict?: boolean;}
+
+export const dot = Dot;
+export const typecast = Typecast;
 
 /**
  * @module Schema
@@ -353,7 +356,7 @@ export class Schema {
    * @return {Schema}
    * @private
    */
-	enforce(obj: obj): ValidationError[] | [] {
+	enforce(obj: obj): Array&lt;ValidationError> {
 		const errors: ValidationError[] = [];
 
 		walk(obj, (path, prop, isCatchall = false) => {
@@ -418,7 +421,7 @@ export class Schema {
    * @param {Object} obj
    * @param {Object} [opts]
    */
-	assert(obj: obj, opts: validationOptions): void {
+	assert(obj: obj, opts?: validationOptions): void {
 		const [err] = this.validate(obj, opts);
 		if (err) throw err;
 	}
@@ -438,7 +441,9 @@ export class Schema {
    * @param {String|Function} [message] - the message or message generator to use
    * @return {Schema}
    */
-	message(name: string | {[index: string]: string}, message: string | CallableFunction): this {
+	message(name: {[index: string]: string | CallableFunction}): this
+	message(name: string, message?: string | CallableFunction): this
+	message(name: string | {[index: string]: string | CallableFunction}, message?: string | CallableFunction): this {
 		assign(name, message, this.messages);
 		return this;
 	}
@@ -456,7 +461,9 @@ export class Schema {
    * @param {Function} [fn] - the function to use
    * @return {Schema}
    */
-	validator(name: string | {[index: string]: CallableFunction}, fn: CallableFunction): this {
+	validator(name: {[index: string]: CallableFunction}): this
+	validator(name: string, fn?: string | CallableFunction): this
+	validator(name: string | {[index: string]: CallableFunction}, fn?: CallableFunction): this {
 		assign(name, fn, this.validators);
 		return this;
 	}
@@ -474,7 +481,9 @@ export class Schema {
    * @param {Function} [fn] - the function to use
    * @return {Schema}
    */
-	typecaster(name: string | {[index: string]: CallableFunction}, fn: CallableFunction): this {
+	typecaster(name: {[index: string]: CallableFunction}): this
+	typecaster(name: string, fn?: string | CallableFunction): this
+	typecaster(name: string | {[index: string]: CallableFunction}, fn?: CallableFunction): this {
 		assign(name, fn, this.typecasters);
 		return this;
 	}

@@ -7,7 +7,7 @@
   tracking-code-which-will-go-to-the-HEAD
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Valivar dot.ts</title>
+  <title>Valivar error.ts</title>
 
   <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -128,7 +128,7 @@
             <div class="content">
                 <header class="page-title">
                     <p>Source</p>
-                    <h1>dot.ts</h1>
+                    <h1>error.ts</h1>
                 </header>
                 
 
@@ -137,182 +137,30 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/***************************************************************************************
-*    Title: eivindfjeldstad/dot
-*    Author: Eivind Fjeldstad
-*    Date: August 28, 2020
-*    Code version: 1.0.3
-*    Availability: https://github.com/eivindfjeldstad/dot
-*
-***************************************************************************************/
-
-import { rec, obj, fromString } from './tsPrimitives';
+            <pre class="prettyprint source linenums"><code>import { nonenumerable } from './tsPrimitives';
 
 /**
-* @private
-*/
-function isIntegerLike(prop: unknown): prop is number {
-	return !isNaN(parseInt('' + prop, 10));
-}
-
-/**
- * Get and set points in an object by their 'dot' path
- * @category Bonus Modules
- * @exports dot
- * @public
+ * Custom errors.
+ *
  */
-export const dot = {
-	name: 'Dot',
+export default class ValidationError extends Error {
+	@nonenumerable
+	public path: unknown;
+	@nonenumerable
+	public expose: boolean;
+	@nonenumerable
+	public status: number;
+	constructor(message: string | undefined, path: unknown) {
+		super(message);
 
-	/**
-	 * Set given `path`
-	 *
-	 * @param {Object} obj
-	 * @param {String} path
-	 * @param {Mixed} val
-	 * @return {Object}
-	 * @public
-	 */
-	set(obj: obj, path: string, val: unknown): obj {
-		const segs = path.split('.');
-		const attr = segs.pop();
-		const src = obj;
-		let currentLayer: unknown = obj;
-		// if (segs.includes('c')) debugger;
-	
-		for (let i = 0; i &lt; segs.length; i++) {
-			const seg = segs[i];
-			if (isSafe(currentLayer, seg)) {
-				if (Array.isArray(currentLayer) &amp;&amp; isIntegerLike(seg)) {
-					currentLayer[seg] = currentLayer[seg] || [] ;
-					currentLayer = currentLayer[seg];
-				} else {
-					const overCurrent = &lt;rec>currentLayer;
-					overCurrent[seg] = overCurrent[seg] || {};
-					currentLayer = overCurrent[seg];
-				}
-			} else {
-				return src;
-			}
-		}
-	
-		if (attr !== null &amp;&amp; attr !== undefined &amp;&amp; isSafe(currentLayer, attr)) {
-			if (Array.isArray(currentLayer) &amp;&amp; isIntegerLike(attr)) {
-				currentLayer[attr] = val;
-			} else if (isObject(currentLayer)) {
-				currentLayer[attr] = val;
-			}
-		}
-	
-		return src;
-	},
+		this.path = path;
+		this.expose = true;
+		this.status = 400;
 
-	/**
-	 * Get given `path`
-	 *
-	 * @param {Object} obj
-	 * @param {String} path
-	 * @return {Mixed}
-	 * @public
-	 */
-	get(obj: obj, path: string): unknown {
-		const segs = &lt;fromString[]> path.split('.');
-		const attr = segs.pop();
-		let currentLayer: unknown = obj;
-
-		for (let i = 0; i &lt; segs.length; i++) {
-			const seg = segs[i];
-			if (isSafe(currentLayer, seg)){
-				if (Array.isArray(currentLayer) &amp;&amp; isIntegerLike(seg)) {
-					currentLayer = currentLayer[seg];
-				} else {
-					const overCurrent = &lt;rec>currentLayer;
-					currentLayer = overCurrent[seg];
-				}
-			} else {
-				return;
-			}
+		if (Error.captureStackTrace) {
+			Error.captureStackTrace(this, ValidationError);
 		}
-		if (attr !== null &amp;&amp; attr !== undefined &amp;&amp; isSafe(currentLayer, attr)) {
-			if (Array.isArray(currentLayer) &amp;&amp; isIntegerLike(attr)) {
-				return currentLayer[attr];
-			} else if (isObject(currentLayer)) {
-				return currentLayer[attr];
-			} else {
-				return;
-			}
-		} else { 
-			return;
-		}
-	},
-
-	/**
-	 * Delete given `path`
-	 *
-	 * @param {Object} obj
-	 * @param {String} path
-	 * @return {Mixed}
-	 * @public
-	 */
-	delete(obj: obj, path: string): void {
-		const segs = path.split('.');
-		const attr = segs.pop();
-		let reObj: unknown = obj;
-	
-		for (let i = 0; i &lt; segs.length; i++) {
-			const seg = segs[i];
-			if (!isRecord(reObj) || !reObj[seg]) return;
-			if (isSafe(reObj, seg)){
-				reObj = reObj[seg];
-			} else {
-				return;
-			}
-		}
-	
-		if (attr === null || attr === undefined || !isSafe(reObj, attr)) return;
-	
-		if (Array.isArray(reObj)) {
-			reObj.splice(parseInt(attr), 1);
-		} else {
-			delete reObj[attr];
-		}
-	},
-};
-
-/**
-* @private
-*/
-function isSafe(obj: unknown, prop: NonNullable&lt;fromString>): obj is rec | unknown[] {
-	if (isObject(obj)) {
-		return obj[prop] === undefined || hasOwnProperty(obj, prop);
 	}
-
-	if (Array.isArray(obj)) {
-		return !isNaN(parseInt('' + prop, 10));
-	}
-
-	return false;
-}
-
-/**
-* @private
-*/
-function hasOwnProperty(obj: rec, prop: PropertyKey): prop is keyof rec {
-	return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-/**
-* @private
-*/
-function isObject(obj: unknown): obj is rec {
-	return Object.prototype.toString.call(obj) === '[object Object]';
-}
-
-/**
-* @private
-*/
-function isRecord(obj:unknown): obj is Record&lt;string | number, unknown> {
-	return typeof obj === 'object' &amp;&amp; obj !== null;
 }
 </code></pre>
         </article>
