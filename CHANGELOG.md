@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.2.3](https://github.com/josh-hemphill/valivar/compare/v6.2.2...v6.2.3) (2020-10-09)
+
+
+### Bug Fixes
+
+* **build:** circular reference ([8c51a80](https://github.com/josh-hemphill/valivar/commit/8c51a800d3639290cfb80d154f5e7d75135c0caf))
+
 ### [6.2.2](https://github.com/josh-hemphill/valivar/compare/v6.2.1...v6.2.2) (2020-10-09)
 
 ### [6.2.1](https://github.com/josh-hemphill/valivar/compare/v6.1.1...v6.2.1) (2020-10-09)
