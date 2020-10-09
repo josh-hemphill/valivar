@@ -8,8 +8,8 @@ const fail = (msg) => {
 	console.log(msg);
 	process.exit(1);
 };
-const handleExec = (x, rt = false) => {
-	const { stdout, stderr, error } = x;
+const handleExec = async(x, rt = false) => {
+	const { stdout, stderr, error } = await x;
 	if (error) {
 		console.log(stderr);
 		fail(error);
@@ -29,7 +29,7 @@ const execChain = async function(arr,shell) {
 		}
 	}
 	for await (let cmd of execs()) {
-		handleExec(cmd);
+		await handleExec(cmd);
 	}
 };
 function toPosix(str, base = false) {

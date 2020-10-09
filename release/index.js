@@ -15,18 +15,17 @@ execChain([
 	'git add .',
 ]).then(async()=>{
 	version = coerceVersion();
-	console.log(version);
-}).then(
-	standardVersion({
+}).then(async()=>{
+	await standardVersion({
 		noVerify: true,
 		dryRun: isDryRun,
-		infile: 'CHANGELOG.md',
-	}),
-).then(
-	execChain([`git push --follow-tags origin latest`]),
-).then(() => {
+		infile: path.resolve('CHANGELOG.md'),
+	});
+},
+).then(async()=>{
+	await execChain([`git push --follow-tags origin latest`]);
+}).then(() => {
 	const newVersion = coerceVersion();
-	console.log(newVersion);
 	if (gt(newVersion, version) && !isDryRun) {
 		version = 'v' + newVersion;
 		return execChain([`gh release create ${version} -F CHANGELOG.md -t ${version}`]);
