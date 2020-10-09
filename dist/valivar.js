@@ -5,6 +5,236 @@
 }(this, (function (exports) { 'use strict';
 
 	/***************************************************************************************
+	*   MODIFIED FROM
+	*   Title: component/component-type
+	*   Author: Component Org
+	*   Date: August 28, 2020
+	*   Code version: 1.2.1
+	*   Availability: https://github.com/component/type
+	*
+	***************************************************************************************/
+	const toString = Object.prototype.toString;
+	const funToString = Function.prototype.toString;
+	const localGlobal = {
+	  Buffer: typeof Buffer !== 'undefined' ? Buffer : ArrayBuffer,
+	  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	  // @ts-ignore
+	  globalThis: typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : {}
+	};
+	/**
+	 * Return the type of `val` as a string.
+	 *
+	 * @param {Mixed} val
+	 * @return {String}
+	 * @public
+	 */
+
+	function getType(val) {
+	  switch (toString.call(val)) {
+	    case '[object Date]':
+	      return 'date';
+
+	    case '[object RegExp]':
+	      return 'regexp';
+
+	    case '[object Arguments]':
+	      return 'arguments';
+
+	    case '[object Array]':
+	      return 'array';
+
+	    case '[object Error]':
+	      return 'error';
+
+	    case '[object Map]':
+	      return 'map';
+	  }
+
+	  if (val === null) return 'null';
+	  if (val === undefined) return 'undefined';
+	  if (typeof val === 'number' && isNaN(val)) return 'nan';
+	  if (typeof val === 'object' && isElement(val)) return 'element';
+	  if (typeof val === 'object' && isNode(val)) return 'node';
+	  if (typeof val === 'object' && isBuffer(val)) return 'buffer';
+
+	  if (isWholeObject(val)) {
+	    val = val?.valueOf ? val?.valueOf() : Object.prototype.valueOf.apply(val);
+	  }
+
+	  if (typeof val === 'function' && funToString.call(val).substr(0, 5) === 'class') return 'class';
+	  return typeof val;
+
+	  function isWholeObject(obj) {
+	    return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length;
+	  }
+
+	  function isBuffer(obj) {
+	    return !!( // Does not support Safari 5-7 (missing Object.prototype.constructor)
+	    // Accepted as Safari 5-7 (Mobile & Desktop) is at < 0.17% usage
+	    // https://caniuse.com/usage-table
+	    obj instanceof localGlobal.Buffer);
+	  } // HTML Type Checking from https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object
+	  //Returns true if it is a DOM node
+
+
+	  function isNode(o) {
+	    const globalKey = 'Node';
+	    return Object.prototype.hasOwnProperty.call(localGlobal.globalThis, globalKey) ? o instanceof localGlobal.globalThis[globalKey] : o && isWholeObject(o) && typeof o.nodeType === 'number' && typeof o.nodeName === 'string';
+	  } //Returns true if it is a DOM element
+
+
+	  function isElement(o) {
+	    const globalKey = 'HTMLElement';
+	    return Object.prototype.hasOwnProperty.call(localGlobal.globalThis, globalKey) ? o instanceof localGlobal.globalThis[globalKey] : o && isWholeObject(o) && o.nodeType === 1 && typeof o.nodeName === 'string';
+	  }
+	}
+
+	const typeOf = getType;
+	/**
+	 * Assign given key and value (or object) to given object
+	 *
+	 * @private
+	 */
+
+	function assign(key, val, obj) {
+	  if (typeof key === 'string') {
+	    obj[key] = val;
+	    return;
+	  }
+
+	  if (typeof key === 'object') {
+	    Object.keys(key).forEach(k => obj[k] = key[k]);
+	  }
+	}
+	/**
+	 * Enumerate all permutations of `path`, replacing $ with array indices and * with object indices
+	 *
+	 * @private
+	 */
+
+	function enumerate(path, obj, callback) {
+	  const parts = path.split(/\.[$*](?=\.|$|\*)/);
+	  const first = parts.shift();
+	  const arr = dot.get(obj, first || '');
+
+	  if (!parts.length) {
+	    return callback(first || '', arr);
+	  }
+
+	  if (!Array.isArray(arr)) {
+	    if (typeOf(arr) === 'object') {
+	      const keys = Object.keys(arr);
+
+	      for (let i = 0; i < keys.length; i++) {
+	        const current = join(keys[i], first);
+	        const next = current + parts.join('.*');
+	        enumerate(next, obj, callback);
+	      }
+	    }
+
+	    return;
+	  }
+
+	  for (let i = 0; i < arr.length; i++) {
+	    const current = join(i, first);
+	    const next = current + parts.join('.$');
+	    enumerate(next, obj, callback);
+	  }
+	}
+	/**
+	 * Walk object and call `callback` with path and prop name
+	 *
+	 * @private
+	 */
+
+	function walk(obj, callback, path, prop) {
+	  const type = typeOf(obj);
+
+	  if (type === 'array') {
+	    const localObj = obj;
+	    localObj.forEach((v, i) => walk(v, callback, join(i, path), join('$', prop)));
+	    return;
+	  }
+
+	  if (type !== 'object') {
+	    return;
+	  }
+
+	  const localObj = obj;
+
+	  for (const [key, val] of Object.entries(localObj)) {
+	    const newPath = join(key, path);
+	    const newProp = join(key, prop);
+	    const newCatchProp = join('*', prop);
+
+	    if (callback(newPath, newCatchProp, true)) {
+	      walk(val, callback, newPath, newCatchProp);
+	    } else if (callback(newPath, newProp)) {
+	      walk(val, callback, newPath, newProp);
+	    }
+	  }
+	}
+	/**
+	 * Join `path` with `prefix`
+	 *
+	 * @private
+	 */
+
+	function join(path, prefix) {
+	  return prefix ? `${prefix.toString()}.${path.toString()}` : path.toString();
+	}
+	function isWholeObject(obj) {
+	  return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length;
+	}
+	function isLimitedKey(prop) {
+	  return typeof prop === 'string' || typeof prop === 'number';
+	}
+	function isIntegerLike(prop) {
+	  return typeof prop !== 'symbol' && !isNaN(parseInt('' + prop, 10));
+	}
+	function isRule(obj) {
+	  return typeof obj === 'function' || typeof obj === 'object' || typeof obj === 'string' || Array.isArray(obj) || typeof obj === 'boolean';
+	}
+	function hasOwnProperty(obj, prop) {
+	  return Object.prototype.hasOwnProperty.call(obj, prop);
+	}
+	function hasConstructor(obj) {
+	  return typeof obj['constructor'] === 'function';
+	}
+	function isSomething(obj) {
+	  return typeof obj === 'object' || typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean';
+	}
+	/**
+	* @private
+	*/
+
+	function isSafe(obj, prop) {
+	  if (isObject(obj)) {
+	    return obj[prop] === undefined || hasOwnProperty(obj, prop);
+	  }
+
+	  if (Array.isArray(obj)) {
+	    return !isNaN(parseInt('' + prop, 10));
+	  }
+
+	  return false;
+	}
+	/**
+	* @private
+	*/
+
+	function isObject(obj) {
+	  return Object.prototype.toString.call(obj) === '[object Object]';
+	}
+	/**
+	* @private
+	*/
+
+	function isRecord(obj) {
+	  return typeof obj === 'object' && obj !== null;
+	}
+
+	/***************************************************************************************
 	*    Title: eivindfjeldstad/dot
 	*    Author: Eivind Fjeldstad
 	*    Date: August 28, 2020
@@ -12,20 +242,9 @@
 	*    Availability: https://github.com/eivindfjeldstad/dot
 	*
 	***************************************************************************************/
-
-	/**
-	* @private
-	*/
-	function isIntegerLike(prop) {
-	  return !isNaN(parseInt('' + prop, 10));
-	}
 	/**
 	 * Get and set points in an object by their 'dot' path
-	 * @category Bonus Modules
-	 * @exports dot
-	 * @public
 	 */
-
 
 	const dot = {
 	  name: 'Dot',
@@ -43,7 +262,7 @@
 	    const segs = path.split('.');
 	    const attr = segs.pop();
 	    const src = obj;
-	    let currentLayer = obj; // if (segs.includes('c')) debugger;
+	    let currentLayer = obj;
 
 	    for (let i = 0; i < segs.length; i++) {
 	      const seg = segs[i];
@@ -101,7 +320,7 @@
 	      }
 	    }
 
-	    if (attr !== null && attr !== undefined && isSafe(currentLayer, attr)) {
+	    if (attr !== null && attr !== undefined) {
 	      if (Array.isArray(currentLayer) && isIntegerLike(attr)) {
 	        return currentLayer[attr];
 	      } else if (isObject(currentLayer)) {
@@ -148,45 +367,6 @@
 	  }
 
 	};
-	/**
-	* @private
-	*/
-
-	function isSafe(obj, prop) {
-	  if (isObject(obj)) {
-	    return obj[prop] === undefined || hasOwnProperty(obj, prop);
-	  }
-
-	  if (Array.isArray(obj)) {
-	    return !isNaN(parseInt('' + prop, 10));
-	  }
-
-	  return false;
-	}
-	/**
-	* @private
-	*/
-
-
-	function hasOwnProperty(obj, prop) {
-	  return Object.prototype.hasOwnProperty.call(obj, prop);
-	}
-	/**
-	* @private
-	*/
-
-
-	function isObject(obj) {
-	  return Object.prototype.toString.call(obj) === '[object Object]';
-	}
-	/**
-	* @private
-	*/
-
-
-	function isRecord(obj) {
-	  return typeof obj === 'object' && obj !== null;
-	}
 
 	/***************************************************************************************
 	*   MODIFIED FROM
@@ -401,201 +581,6 @@
 	__decorate([nonenumerable, __metadata("design:type", Boolean)], ValidationError.prototype, "expose", void 0);
 
 	__decorate([nonenumerable, __metadata("design:type", Number)], ValidationError.prototype, "status", void 0);
-
-	/***************************************************************************************
-	*   MODIFIED FROM
-	*   Title: component/component-type
-	*   Author: Component Org
-	*   Date: August 28, 2020
-	*   Code version: 1.2.1
-	*   Availability: https://github.com/component/type
-	*
-	***************************************************************************************/
-	const toString = Object.prototype.toString;
-	const funToString = Function.prototype.toString;
-	const localGlobal = {
-	  Buffer: typeof Buffer !== 'undefined' ? Buffer : ArrayBuffer,
-	  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	  // @ts-ignore
-	  globalThis: typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : {}
-	};
-	/**
-	 * Return the type of `val` as a string.
-	 *
-	 * @param {Mixed} val
-	 * @return {String}
-	 * @public
-	 */
-
-	function getType(val) {
-	  switch (toString.call(val)) {
-	    case '[object Date]':
-	      return 'date';
-
-	    case '[object RegExp]':
-	      return 'regexp';
-
-	    case '[object Arguments]':
-	      return 'arguments';
-
-	    case '[object Array]':
-	      return 'array';
-
-	    case '[object Error]':
-	      return 'error';
-
-	    case '[object Map]':
-	      return 'map';
-	  }
-
-	  if (val === null) return 'null';
-	  if (val === undefined) return 'undefined';
-	  if (typeof val === 'number' && isNaN(val)) return 'nan';
-	  if (typeof val === 'object' && isElement(val)) return 'element';
-	  if (typeof val === 'object' && isNode(val)) return 'node';
-	  if (typeof val === 'object' && isBuffer(val)) return 'buffer';
-
-	  if (isWholeObject(val)) {
-	    val = val?.valueOf ? val?.valueOf() : Object.prototype.valueOf.apply(val);
-	  }
-
-	  if (typeof val === 'function' && funToString.call(val).substr(0, 5) === 'class') return 'class';
-	  return typeof val;
-
-	  function isWholeObject(obj) {
-	    return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length;
-	  }
-
-	  function isBuffer(obj) {
-	    return !!( // Does not support Safari 5-7 (missing Object.prototype.constructor)
-	    // Accepted as Safari 5-7 (Mobile & Desktop) is at < 0.17% usage
-	    // https://caniuse.com/usage-table
-	    obj instanceof localGlobal.Buffer);
-	  } // HTML Type Checking from https://stackoverflow.com/questions/384286/how-do-you-check-if-a-javascript-object-is-a-dom-object
-	  //Returns true if it is a DOM node
-
-
-	  function isNode(o) {
-	    const globalKey = 'Node';
-	    return Object.prototype.hasOwnProperty.call(localGlobal.globalThis, globalKey) ? o instanceof localGlobal.globalThis[globalKey] : o && isWholeObject(o) && typeof o.nodeType === 'number' && typeof o.nodeName === 'string';
-	  } //Returns true if it is a DOM element
-
-
-	  function isElement(o) {
-	    const globalKey = 'HTMLElement';
-	    return Object.prototype.hasOwnProperty.call(localGlobal.globalThis, globalKey) ? o instanceof localGlobal.globalThis[globalKey] : o && isWholeObject(o) && o.nodeType === 1 && typeof o.nodeName === 'string';
-	  }
-	}
-
-	const typeOf = getType;
-	/**
-	 * Assign given key and value (or object) to given object
-	 *
-	 * @private
-	 */
-
-	function assign(key, val, obj) {
-	  if (typeof key === 'string') {
-	    obj[key] = val;
-	    return;
-	  }
-
-	  if (typeof key === 'object') {
-	    Object.keys(key).forEach(k => obj[k] = key[k]);
-	  }
-	}
-	/**
-	 * Enumerate all permutations of `path`, replacing $ with array indices and * with object indices
-	 *
-	 * @private
-	 */
-
-	function enumerate(path, obj, callback) {
-	  const parts = path.split(/\.[$*](?=\.|$|\*)/);
-	  const first = parts.shift();
-	  const arr = dot.get(obj, first || '');
-
-	  if (!parts.length) {
-	    return callback(first || '', arr);
-	  }
-
-	  if (!Array.isArray(arr)) {
-	    if (typeOf(arr) === 'object') {
-	      const keys = Object.keys(arr);
-
-	      for (let i = 0; i < keys.length; i++) {
-	        const current = join(keys[i], first);
-	        const next = current + parts.join('.*');
-	        enumerate(next, obj, callback);
-	      }
-	    }
-
-	    return;
-	  }
-
-	  for (let i = 0; i < arr.length; i++) {
-	    const current = join(i, first);
-	    const next = current + parts.join('.$');
-	    enumerate(next, obj, callback);
-	  }
-	}
-	/**
-	 * Walk object and call `callback` with path and prop name
-	 *
-	 * @private
-	 */
-
-	function walk(obj, callback, path, prop) {
-	  const type = typeOf(obj);
-
-	  if (type === 'array') {
-	    const localObj = obj;
-	    localObj.forEach((v, i) => walk(v, callback, join(i, path), join('$', prop)));
-	    return;
-	  }
-
-	  if (type !== 'object') {
-	    return;
-	  }
-
-	  const localObj = obj;
-
-	  for (const [key, val] of Object.entries(localObj)) {
-	    const newPath = join(key, path);
-	    const newProp = join(key, prop);
-	    const newCatchProp = join('*', prop);
-
-	    if (callback(newPath, newCatchProp, true)) {
-	      walk(val, callback, newPath, newCatchProp);
-	    } else if (callback(newPath, newProp)) {
-	      walk(val, callback, newPath, newProp);
-	    }
-	  }
-	}
-	/**
-	 * Join `path` with `prefix`
-	 *
-	 * @private
-	 */
-
-	function join(path, prefix) {
-	  return prefix ? `${prefix.toString()}.${path.toString()}` : path.toString();
-	}
-	function isWholeObject(obj) {
-	  return typeof obj === 'object' && obj !== null && !!Object.keys(obj).length;
-	}
-	function isLimitedKey(prop) {
-	  return typeof prop === 'string' || typeof prop === 'number' || typeof prop === 'symbol';
-	}
-	function isRule(obj) {
-	  return typeof obj === 'function' || typeof obj === 'object' || typeof obj === 'string' || Array.isArray(obj) || typeof obj === 'boolean';
-	}
-	function hasConstructor(obj) {
-	  return typeof obj['constructor'] === 'function';
-	}
-	function isSomething(obj) {
-	  return typeof obj === 'object' || typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean';
-	}
 
 	function isValidationFunctionArr(arr) {
 	  return Array.isArray(arr) && typeof arr[0] === 'function';
