@@ -14,7 +14,8 @@
 <script>
 	var output = document.getElementById('output')
 	try {
-		output.innerText = JSON.stringify(new valivar())
+		const { dot, Schema, typecast } = valivar;
+		output.innerText = JSON.stringify({ dot: dot.name, Schema: Schema.name, typecast: typecast.name })
 	} catch (error) {
 		output.innerText = JSON.stringify(error)
 	}

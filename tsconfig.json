@@ -19,6 +19,7 @@
 		"baseUrl": ".",
 		"types": [
 			"@types/node",
+			"@types/jest"
 		]
 	},
 	"include": [

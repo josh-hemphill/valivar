@@ -1,7 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
 /***************************************************************************************
 *    Title: eivindfjeldstad/dot
 *    Author: Eivind Fjeldstad
@@ -1611,6 +1607,4 @@ class Schema {
 }
 Schema.ValidationError = ValidationError;
 
-exports.Schema = Schema;
-exports.dot = dot$1;
-exports.typecast = typecast$1;
+export { Schema, dot$1 as dot, typecast$1 as typecast };

@@ -1,9 +1,13 @@
 import ValidationError from './error';
 import { join } from './utils';
 import { Schema } from './schema';
-import { obj, key, magnitudeOptions, ValidationFunction, rule, messageFunction, messageOpts, argsTypes } from './tsPrimitives';
+import { obj, key, magnitudeOptions, ValidationFunction, rule, messageFunction, messageOpts, argsTypes, ValidationFunctionArr } from './tsPrimitives';
 import Messages from './messages';
 import { ValidatorProps } from './validators';
+
+function isValidationFunctionArr(arr: ValidationFunction | ValidationFunctionArr): arr is ValidationFunctionArr {
+	return Array.isArray(arr) && typeof <ValidationFunction>arr[0] === 'function';
+}
 
 /**
  * A property instance gets returned whenever you call `schema.path()`.
@@ -90,14 +94,16 @@ export default class Property {
    * @param {Object} fns - object with named validation functions to call
    * @return {Property}
    */
-	use(fns: Record<key, ValidationFunction | ValidationFunction[]>): this {
+	use(fns: Record<key, ValidationFunction | ValidationFunctionArr>): this {
 		Object.keys(fns).forEach((name) => {
-			let arr = fns[name];
-			if (!Array.isArray(arr)) arr = [arr];
-			const fn = arr.shift();
-			this._register(name, arr, fn);
+			const arr = fns[name];
+			if (isValidationFunctionArr(arr)) {
+				const [fn, ...args] = arr;
+				this._register(name, args, fn);
+			} else {
+				this._register(name, [], arr);
+			}
 		});
-
 		return this;
 	}
 
@@ -405,7 +411,7 @@ export default class Property {
    * @return {Property}
    * @private
    */
-	_register(type: string, args: argsTypes[], fn?: ValidationFunction): this {
+	_register(type: string, args: argsTypes[] | [], fn?: ValidationFunction): this {
 		this.registry[type] = { args, fn };
 		return this;
 	}

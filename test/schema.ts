@@ -2,6 +2,7 @@ import { Schema } from '../lib/schema';
 import Property from '../lib/property';
 import ValidationError from '../lib/error';
 import Messages from '../lib/messages';
+import { rule } from '../lib/tsPrimitives';
 
 describe('Schema', () => {
 	describe('when given an object', () => {
@@ -288,8 +289,8 @@ describe('Schema', () => {
 				};
 
 				const errors = schema.validate(obj, { strict: true });
-				const messages = errors.map((e) => e.message);
-				const paths = errors.map((e) => e.path);
+				const messages = (errors as ValidationError[]).map((e) => e.message);
+				const paths = (errors as ValidationError[]).map((e) => e.path);
 
 				expect(messages).toStrictEqual([
 					Messages.illegal('b.0.b'),
@@ -353,7 +354,7 @@ describe('Schema', () => {
 		test('should set default typecasters', () => {
 			const obj = { name: 123 };
 			const schema = new Schema({ name: { type: 'hello' } });
-			schema.typecaster('hello', (val) => val.toString());
+			schema.typecaster('hello', (val: rule ) => val.toString());
 			schema.typecast(obj);
 			expect(obj.name).toBe('123');
 		});
@@ -361,7 +362,7 @@ describe('Schema', () => {
 		test('should set default typecasters', () => {
 			const obj = { name: 123 };
 			const schema = new Schema({ name: { type: 'hello' } });
-			schema.typecaster({ hello: (val) => val.toString() });
+			schema.typecaster({ hello: (val: rule ) => val.toString() });
 			schema.typecast(obj);
 			expect(obj.name).toBe('123');
 		});

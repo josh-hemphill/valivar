@@ -1,15 +1,14 @@
+const { jsWithTs } = require('ts-jest/presets');
 module.exports = {
 	'rootDir':'../',
 	'preset': 'ts-jest/presets/js-with-ts',
 	testEnvironment: 'node',
 	moduleFileExtensions: ['ts', 'js'],
 	'testMatch': [
-		'**/test/**/*.js',
+		'**/test/**/*.[tj]s',
 	],
 	'transform': {
-		'\\.ts$': [
-			'ts-jest',
-		],
+		...jsWithTs.transform,
 	},
 	'coverageReporters': [
 		'text-summary',

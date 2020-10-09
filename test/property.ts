@@ -13,7 +13,7 @@ describe('Property', () => {
 			const prop = new Property('test', new Schema());
 			prop.required();
 			prop.message({ required: 'hello' });
-			expect(prop.validate(null).message).toBe('hello');
+			expect(prop.validate(null,{})?.message).toBe('hello');
 		});
 
 		test('should accept a string as a default message', () => {
@@ -21,18 +21,18 @@ describe('Property', () => {
 			prop.required();
 			prop.type(String);
 			prop.message('hello');
-			expect(prop.validate('').message).toBe('hello');
-			expect(prop.validate(null).message).toBe('hello');
+			expect(prop.validate('',{})?.message).toBe('hello');
+			expect(prop.validate(null,{})?.message).toBe('hello');
 		});
 
 		test('should fall back to default error messages', () => {
 			const prop = new Property('test', new Schema());
-			const message = Messages.required(prop.name, {}, true);
+			const message = Messages.required(prop.name);
 			prop.message({ type: 'hello' });
 			prop.type(String);
 			prop.required();
-			expect(prop.validate('').message).toBe(message);
-			expect(prop.validate(1).message).toBe('hello');
+			expect(prop.validate('',{})?.message).toBe(message);
+			expect(prop.validate(1,{})?.message).toBe('hello');
 		});
 
 		test('should support chaining', () => {
@@ -48,9 +48,9 @@ describe('Property', () => {
 				one: (v) => v !== 1,
 				two: (v) => v !== 2,
 			});
-			expect(prop.validate(1)).toBeInstanceOf(Error);
-			expect(prop.validate(2)).toBeInstanceOf(Error);
-			expect(prop.validate(3)).toBe(null);
+			expect(prop.validate(1,{})).toBeInstanceOf(Error);
+			expect(prop.validate(2,{})).toBeInstanceOf(Error);
+			expect(prop.validate(3,{})).toBe(null);
 		});
 
 		test('should use property names to look up error messages', () => {
@@ -67,25 +67,25 @@ describe('Property', () => {
 				two: (v) => v !== 2,
 			});
 
-			expect(prop.validate(1).message).toBe('error 1');
-			expect(prop.validate(2).message).toBe('error 2');
+			expect(prop.validate(1,{})?.message).toBe('error 1');
+			expect(prop.validate(2,{})?.message).toBe('error 2');
 		});
 
 		test('should register additional arguments', () => {
 			const prop = new Property('test', new Schema());
-			let first, second;
+			let first: unknown, second: unknown;
 			prop.use({
-				one: [(v, c, arg) => first = arg, 1],
-				two: [(v, c, arg) => second = arg, 2],
+				one: [(v, c, arg) => {first = arg;return true}, 1],
+				two: [(v, c, arg) => {second = arg;return true}, 2],
 			});
-			prop.validate({ test: 1 });
+			prop.validate({ test: 1}, {});
 			expect(first).toBe(1);
 			expect(second).toBe(2);
 		});
 
 		test('should support chaining', () => {
 			const prop = new Property('test', new Schema());
-			expect(prop.use({ one: () => {return} })).toBe(prop);
+			expect(prop.use({ one: () => {return true} })).toBe(prop);
 		});
 	});
 
@@ -93,15 +93,15 @@ describe('Property', () => {
 		test('should register a validator', () => {
 			const prop = new Property('test', new Schema());
 			prop.required();
-			expect(prop.validate(null)).toBeInstanceOf(Error);
-			expect(prop.validate(100)).toBe(null);
+			expect(prop.validate(null,{})).toBeInstanceOf(Error);
+			expect(prop.validate(100,{})).toBe(null);
 		});
 
 		test('should use the correct error message', () => {
 			const prop = new Property('test', new Schema());
-			const message = Messages.required(prop.name, {}, true);
+			const message = Messages.required(prop.name);
 			prop.required();
-			expect(prop.validate(null).message).toBe(message);
+			expect(prop.validate(null,{})?.message).toBe(message);
 		});
 
 		test('should support chaining', () => {
@@ -114,9 +114,9 @@ describe('Property', () => {
 		test('should register a validator', () => {
 			const prop = new Property('test', new Schema());
 			prop.type(String);
-			expect(prop.validate(1)).toBeInstanceOf(Error);
-			expect(prop.validate('test')).toBe(null);
-			expect(prop.validate(null)).toBe(null);
+			expect(prop.validate(1,{})).toBeInstanceOf(Error);
+			expect(prop.validate('test',{})).toBe(null);
+			expect(prop.validate(null,{})).toBe(null);
 		});
 
 		test('should set the internal ._type property', () => {
@@ -129,7 +129,7 @@ describe('Property', () => {
 			const prop = new Property('test', new Schema());
 			const message = Messages.type(prop.name, {}, String);
 			prop.type(String);
-			expect(prop.validate(1).message).toBe(message);
+			expect(prop.validate(1,{})?.message).toBe(message);
 		});
 
 		test('should support chaining', () => {
@@ -182,9 +182,9 @@ describe('Property', () => {
 		test('should register a validator', () => {
 			const prop = new Property('test', new Schema());
 			prop.match(/^abc$/);
-			expect(prop.validate('cab')).toBeInstanceOf(Error);
-			expect(prop.validate('abc')).toBe(null);
-			expect(prop.validate(null)).toBe(null);
+			expect(prop.validate('cab',{})).toBeInstanceOf(Error);
+			expect(prop.validate('abc',{})).toBe(null);
+			expect(prop.validate(null,{})).toBe(null);
 		});
 
 		test('should use the correct error message', () => {
@@ -192,7 +192,7 @@ describe('Property', () => {
 			const regexp = /^abc$/;
 			const message = Messages.match(prop.name, {}, regexp);
 			prop.match(regexp);
-			expect(prop.validate('cab').message).toBe(message);
+			expect(prop.validate('cab',{})?.message).toBe(message);
 		});
 
 		test('should support chaining', () => {
@@ -205,10 +205,10 @@ describe('Property', () => {
 		test('should register a validator', () => {
 			const prop = new Property('test', new Schema());
 			prop.length({ min: 2, max: 3 });
-			expect(prop.validate('abcd')).toBeInstanceOf(Error);
-			expect(prop.validate('a')).toBeInstanceOf(Error);
-			expect(prop.validate('abc')).toBe(null);
-			expect(prop.validate(null)).toBe(null);
+			expect(prop.validate('abcd',{})).toBeInstanceOf(Error);
+			expect(prop.validate('a',{})).toBeInstanceOf(Error);
+			expect(prop.validate('abc',{})).toBe(null);
+			expect(prop.validate(null,{})).toBe(null);
 		});
 
 		test('should use the correct error message', () => {
@@ -216,12 +216,12 @@ describe('Property', () => {
 			const rule = { max: 1 };
 			const message = Messages.length(prop.name, {}, rule);
 			prop.length(rule);
-			expect(prop.validate('abc').message).toBe(message);
+			expect(prop.validate('abc',{})?.message).toBe(message);
 		});
 
 		test('should support chaining', () => {
 			const prop = new Property('test', new Schema());
-			expect(prop.length({})).toBe(prop);
+			expect(prop.length(1)).toBe(prop);
 		});
 	});
 
@@ -229,10 +229,10 @@ describe('Property', () => {
 		test('should register a validator', () => {
 			const prop = new Property('test', new Schema());
 			prop.size({ min: 2, max: 3 });
-			expect(prop.validate(4)).toBeInstanceOf(Error);
-			expect(prop.validate(1)).toBeInstanceOf(Error);
-			expect(prop.validate(2)).toBe(null);
-			expect(prop.validate(null)).toBe(null);
+			expect(prop.validate(4,{})).toBeInstanceOf(Error);
+			expect(prop.validate(1,{})).toBeInstanceOf(Error);
+			expect(prop.validate(2,{})).toBe(null);
+			expect(prop.validate(null,{})).toBe(null);
 		});
 
 		test('should use the correct error message', () => {
@@ -240,12 +240,12 @@ describe('Property', () => {
 			const rule = { max: 1 };
 			const message = Messages.size(prop.name, {}, rule);
 			prop.size(rule);
-			expect(prop.validate(2).message).toBe(message);
+			expect(prop.validate(2,{})?.message).toBe(message);
 		});
 
 		test('should support chaining', () => {
 			const prop = new Property('test', new Schema());
-			expect(prop.size({})).toBe(prop);
+			expect(prop.size(1)).toBe(prop);
 		});
 	});
 
@@ -253,10 +253,10 @@ describe('Property', () => {
 		test('should register a validator', () => {
 			const prop = new Property('test', new Schema());
 			prop.enum(['one', 'two']);
-			expect(prop.validate('three')).toBeInstanceOf(Error);
-			expect(prop.validate('one')).toBe(null);
-			expect(prop.validate('two')).toBe(null);
-			expect(prop.validate(null)).toBe(null);
+			expect(prop.validate('three',{})).toBeInstanceOf(Error);
+			expect(prop.validate('one',{})).toBe(null);
+			expect(prop.validate('two',{})).toBe(null);
+			expect(prop.validate(null,{})).toBe(null);
 		});
 
 		test('should use the correct error message', () => {
@@ -264,7 +264,7 @@ describe('Property', () => {
 			const enums = ['one', 'two'];
 			const message = Messages.enum(prop.name, {}, enums);
 			prop.enum(enums);
-			expect(prop.validate('three').message).toBe(message);
+			expect(prop.validate('three',{})?.message).toBe(message);
 		});
 
 		test('should support chaining', () => {
@@ -303,8 +303,8 @@ describe('Property', () => {
 			const schema = new Schema();
 			const prop = new Property('test', schema);
 			prop.elements([{ type: Number }, { type: String }]);
-			expect(schema.validate({ test: [1, 'hello'] })).toHaveLength(0);
-			expect(schema.validate({ test: ['hello', 'hello'] })).toHaveLength(1);
+			expect(schema.validate({ test: [1, 'hello']} ,{})).toHaveLength(0);
+			expect(schema.validate({ test: ['hello', 'hello']} ,{})).toHaveLength(1);
 		});
 
 		test('should support chaining', () => {
@@ -351,27 +351,27 @@ describe('Property', () => {
 			const prop = new Property('test', new Schema());
 			prop.required();
 			prop.match(/^abc$/);
-			expect(prop.validate(null)).toBeInstanceOf(Error);
-			expect(prop.validate('abc')).toBe(null);
-			expect(prop.validate('cab')).toBeInstanceOf(Error);
+			expect(prop.validate(null,{})).toBeInstanceOf(Error);
+			expect(prop.validate('abc',{})).toBe(null);
+			expect(prop.validate('cab',{})).toBeInstanceOf(Error);
 		});
 
 		test('should return a ValidationError', () => {
 			const prop = new Property('some.path', new Schema());
 			prop.required();
-			expect(prop.validate(null)).toBeInstanceOf(Error);
+			expect(prop.validate(null,{})).toBeInstanceOf(Error);
 		});
 
 		test('should assign errors a .path', () => {
 			const prop = new Property('some.path', new Schema());
 			prop.required();
-			expect(prop.validate(null).path).toBe('some.path');
+			expect(prop.validate(null,{})?.path).toBe('some.path');
 		});
 
 		test('should allow path to be overridden', () => {
 			const prop = new Property('some.path', new Schema());
 			prop.required();
-			expect(prop.validate(null, {}, 'some.other.path').path).toBe('some.other.path');
+			expect(prop.validate(null, {}, 'some.other.path')?.path).toBe('some.other.path');
 		});
 
 		test('should pass context to validators', () => {
@@ -382,6 +382,7 @@ describe('Property', () => {
 			prop.use({
 				context: (v, c) => {
 					ctx = c;
+					return true;
 				},
 			});
 
@@ -396,6 +397,7 @@ describe('Property', () => {
 			prop.use({
 				context: (v, c, p) => {
 					path = p;
+					return true;
 				},
 			});
 

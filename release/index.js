@@ -82,13 +82,18 @@ inquirer
 		if (token) {
 			auth.token = token;
 			const sshConfig = SSHConfig.parse(fs.readFileSync(sshConfigFile,{encoding:'utf-8'}));
-			let keyConfig = sshConfig.find(({param, host, config}) => ['host','Host'].includes(param) && 
-				(sshHosts.includes(host) || config.some(
-					({param, value}) => param === 'HostName' && sshHosts.includes(value))))?.config?.reduce(
-				(r, {param, value}) => {
-					if (param === 'IdentityFile') r = value;
-					return r;
+			let keyConfig = sshConfig.find(({param, value, config}) => ['host','Host'].includes(param) && 
+				(sshHosts.includes(value) || config.some(
+					({param, value}) => param === 'HostName' && sshHosts.includes(value),
+				)),
+			);
+			
+			keyConfig = keyConfig?.config?.reduce(
+				(reduced, {param, value}) => {
+					if (param === 'IdentityFile') reduced = value;
+					return reduced;
 				},
+				'',
 			);
 			if (!keyConfig) {
 				throw Error('No SSH Key detected');

@@ -1,5 +1,4 @@
 import ts from '@wessberg/rollup-plugin-ts';
-import { allModuleTypes } from './rollupUtils';
 const dist = './dist/';
 
 const plugins = [
@@ -20,17 +19,34 @@ const plugins = [
 export default [
 	{
 		input: 'lib/schema.ts',
-		output: allModuleTypes(dist, 'valivar'),
-		plugins,
-	},
-	{
-		input: 'lib/dot.ts',
-		output: allModuleTypes(dist, 'dot'),
-		plugins,
-	},
-	{
-		input: 'lib/typecast.ts',
-		output: allModuleTypes(dist, 'typecast'),
+		output: [
+			{
+				file: `${dist}valivar.cjs.js`,
+				format: 'cjs',
+				exports: 'auto',
+			},
+			{
+				file: `${dist}valivar.cjs`,
+				format: 'cjs',
+				exports: 'auto',
+			},
+			{
+				file: `${dist}valivar.esm.js`,
+				format: 'es',
+				exports: 'auto',
+			},
+			{
+				file: `${dist}valivar.mjs`,
+				format: 'es',
+				exports: 'auto',
+			},
+			{
+				name: 'valivar',
+				file: `${dist}valivar.js`,
+				format: 'umd',
+				exports: 'auto',
+			},
+		],
 		plugins,
 	},
 ];

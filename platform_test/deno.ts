@@ -1,16 +1,14 @@
 import { assertEquals } from "https://deno.land/std/testing/asserts.ts";
 
-import { valivar } from "../mod.ts";
+import { dot, Schema, typecast } from "../mod.ts";
+
 Deno.test("Validate Module Imported", function () {
-  assertEquals(valivar.name, "Schema");
+  assertEquals(Schema.name, "Schema");
 });
 
-import { dot } from "../mod.ts";
-Deno.test("Dot Module Imported", function () {
+Deno.test("Dot available", function () {
   assertEquals(dot.name, "Dot");
 });
-
-import { typecast } from "../mod.ts";
-Deno.test("Typecast Module Imported", function () {
+Deno.test("Typecast available", function () {
   assertEquals(typecast.name, "Typecast");
 });

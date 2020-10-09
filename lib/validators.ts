@@ -9,7 +9,19 @@ import {
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type TypeFunction = Function
-import { hasConstructor, isSomething } from './utils';
+import { hasConstructor, hasOwnProperty, isSomething } from './utils';
+
+function compareMagnitudes(len: Exclude<magnitudeOptions,number>, length: number): boolean {
+	if ('min' in len) {
+		if (typeof len.min === 'string') len.min = parseInt(len.min);
+		if (typeof len.min === 'number' && length < len.min) return false;
+	} 
+	if ('max' in len) {
+		if (typeof len.max === 'string') len.max = parseInt(len.max);
+		if (typeof len.max === 'number' && length > len.max) return false;
+	} 
+	return true;
+}
 
 /**
  * Default validators.
@@ -62,12 +74,7 @@ const Validators = {
 		if (typeof len === 'number') {
 			return value.length === len;
 		}
-		if (typeof len.min === 'string') len.min = parseInt(len.min);
-		if (typeof len.max === 'string') len.max = parseInt(len.max);
-		const { min, max } = len;
-		if (min && value.length < min) return false;
-		if (max && value.length > max) return false;
-		return true;
+		return compareMagnitudes(len,value.length);
 	},
 
 	/**
@@ -85,12 +92,7 @@ const Validators = {
 		if (typeof size === 'number') {
 			return value === size;
 		}
-		if (typeof size.min === 'string') size.min = parseInt(size.min);
-		if (typeof size.max === 'string') size.max = parseInt(size.max);
-		const { min, max } = size;
-		if (min !== undefined && min !== null && value < min) return false;
-		if (max !== undefined && max !== null && value > max) return false;
-		return true;
+		return compareMagnitudes(size,value);
 	},
 
 	/**

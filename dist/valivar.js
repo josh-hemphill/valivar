@@ -332,40 +332,62 @@
 	  value: 'Typecast'
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	function nonenumerable( // eslint-disable-next-line @typescript-eslint/no-explicit-any
-	target, propertyKey) {
-	  const descriptor = Object.getOwnPropertyDescriptor(target, propertyKey) || {};
+	/*! *****************************************************************************
+	Copyright (c) Microsoft Corporation.
 
-	  if (typeof descriptor === 'object') {
-	    descriptor.enumerable = false;
-	    Object.defineProperty(target, propertyKey, descriptor);
-	  }
+	Permission to use, copy, modify, and/or distribute this software for any
+	purpose with or without fee is hereby granted.
+
+	THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+	REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+	AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+	INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+	LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+	OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+	PERFORMANCE OF THIS SOFTWARE.
+	***************************************************************************** */
+
+	function __decorate(decorators, target, key, desc) {
+	    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+	    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	    return c > 3 && r && Object.defineProperty(target, key, r), r;
 	}
+
+	function __metadata(metadataKey, metadataValue) {
+	    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+	}
+
+	const nonenumerable = (target, name, desc) => {
+	  if (desc) {
+	    desc.enumerable = false;
+	    return desc;
+	  }
+
+	  Object.defineProperty(target, name, {
+	    set(value) {
+	      Object.defineProperty(this, name, {
+	        value,
+	        writable: true,
+	        configurable: true
+	      });
+	    },
+
+	    configurable: true
+	  });
+	};
+
 	/**
 	 * Custom errors.
 	 *
-	 * @private
 	 */
-
 
 	class ValidationError extends Error {
 	  constructor(message, path) {
 	    super(message);
-
-	    this.defineProp = (prop, val) => {
-	      Object.defineProperty(this, prop, {
-	        enumerable: false,
-	        configurable: true,
-	        writable: true,
-	        value: val
-	      });
-	    };
-
-	    nonenumerable(this, 'defineProp');
-	    this.defineProp('path', path);
-	    this.defineProp('expose', true);
-	    this.defineProp('status', 400);
+	    this.path = path;
+	    this.expose = true;
+	    this.status = 400;
 
 	    if (Error.captureStackTrace) {
 	      Error.captureStackTrace(this, ValidationError);
@@ -373,6 +395,12 @@
 	  }
 
 	}
+
+	__decorate([nonenumerable, __metadata("design:type", Object)], ValidationError.prototype, "path", void 0);
+
+	__decorate([nonenumerable, __metadata("design:type", Boolean)], ValidationError.prototype, "expose", void 0);
+
+	__decorate([nonenumerable, __metadata("design:type", Number)], ValidationError.prototype, "status", void 0);
 
 	/***************************************************************************************
 	*   MODIFIED FROM
@@ -569,6 +597,9 @@
 	  return typeof obj === 'object' || typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean';
 	}
 
+	function isValidationFunctionArr(arr) {
+	  return Array.isArray(arr) && typeof arr[0] === 'function';
+	}
 	/**
 	 * A property instance gets returned whenever you call `schema.path()`.
 	 * Properties are also created internally when an object is passed to the Schema constructor.
@@ -576,6 +607,7 @@
 	 * @param {String} name - the name of the property
 	 * @param {Schema} schema - parent schema
 	 */
+
 
 	class Property {
 	  constructor(name, schema) {
@@ -658,11 +690,15 @@
 
 	  use(fns) {
 	    Object.keys(fns).forEach(name => {
-	      let arr = fns[name];
-	      if (!Array.isArray(arr)) arr = [arr];
-	      const fn = arr.shift();
+	      const arr = fns[name];
 
-	      this._register(name, arr, fn);
+	      if (isValidationFunctionArr(arr)) {
+	        const [fn, ...args] = arr;
+
+	        this._register(name, args, fn);
+	      } else {
+	        this._register(name, [], arr);
+	      }
 	    });
 	    return this;
 	  }
@@ -1141,11 +1177,25 @@
 
 	};
 
+	function compareMagnitudes(len, length) {
+	  if ('min' in len) {
+	    if (typeof len.min === 'string') len.min = parseInt(len.min);
+	    if (typeof len.min === 'number' && length < len.min) return false;
+	  }
+
+	  if ('max' in len) {
+	    if (typeof len.max === 'string') len.max = parseInt(len.max);
+	    if (typeof len.max === 'number' && length > len.max) return false;
+	  }
+
+	  return true;
+	}
 	/**
 	 * Default validators.
 	 *
 	 * @private
 	 */
+
 
 	const Validators = {
 	  /**
@@ -1196,15 +1246,7 @@
 	      return value.length === len;
 	    }
 
-	    if (typeof len.min === 'string') len.min = parseInt(len.min);
-	    if (typeof len.max === 'string') len.max = parseInt(len.max);
-	    const {
-	      min,
-	      max
-	    } = len;
-	    if (min && value.length < min) return false;
-	    if (max && value.length > max) return false;
-	    return true;
+	    return compareMagnitudes(len, value.length);
 	  },
 
 	  /**
@@ -1224,15 +1266,7 @@
 	      return value === size;
 	    }
 
-	    if (typeof size.min === 'string') size.min = parseInt(size.min);
-	    if (typeof size.max === 'string') size.max = parseInt(size.max);
-	    const {
-	      min,
-	      max
-	    } = size;
-	    if (min !== undefined && min !== null && value < min) return false;
-	    if (max !== undefined && max !== null && value > max) return false;
-	    return true;
+	    return compareMagnitudes(size, value);
 	  },
 
 	  /**
@@ -1263,6 +1297,8 @@
 
 	};
 
+	const dot$1 = dot;
+	const typecast$1 = typecast;
 	/**
 	 * @module Schema
 	 */
@@ -1301,7 +1337,7 @@
 	    this.props = {};
 	    this.messages = Object.assign({}, Messages);
 	    this.validators = Object.assign({}, Validators);
-	    this.typecasters = Object.assign({}, typecast.casters);
+	    this.typecasters = Object.assign({}, typecast$1.casters);
 	    Object.keys(obj).forEach(k => this.path(k, obj[k]));
 	  }
 	  /**
@@ -1428,7 +1464,7 @@
 	          if (value === null || value === undefined) return;
 	          const cast = prop.typecast(value);
 	          if (cast === value) return;
-	          dot.set(obj, key, cast);
+	          dot$1.set(obj, key, cast);
 	        });
 	      }
 	    }
@@ -1449,7 +1485,7 @@
 	    walk(obj, (path, prop, isCatchall = false) => {
 	      if (isLimitedKey(prop) && this.props[prop]) return true;
 	      if (isCatchall) return false;
-	      if (isWholeObject(obj)) dot.delete(obj, path);
+	      if (isWholeObject(obj)) dot$1.delete(obj, path);
 	      return false;
 	    });
 	    return this;
@@ -1531,60 +1567,16 @@
 	    const [err] = this.validate(obj, opts);
 	    if (err) throw err;
 	  }
-	  /**
-	  * Override default error messages.
-	  *
-	  * @example
-	  * const hex = (val) => /^0x[0-9a-f]+$/.test(val)
-	  * schema.path('some.path').use({ hex })
-	  * schema.message('hex', path => `${path} must be hexadecimal`)
-	  *
-	  * @example
-	  * schema.message({ hex: path => `${path} must be hexadecimal` })
-	  *
-	  * @param {String|Object} name - name of the validator or an object with name-message pairs
-	  * @param {String|Function} [message] - the message or message generator to use
-	  * @return {Schema}
-	  */
-
 
 	  message(name, message) {
 	    assign(name, message, this.messages);
 	    return this;
 	  }
-	  /**
-	  * Override default validators.
-	  *
-	  * @example
-	  * schema.validator('required', val => val != null)
-	  *
-	  * @example
-	  * schema.validator({ required: val => val != null })
-	  *
-	  * @param {String|Object} name - name of the validator or an object with name-function pairs
-	  * @param {Function} [fn] - the function to use
-	  * @return {Schema}
-	  */
-
 
 	  validator(name, fn) {
 	    assign(name, fn, this.validators);
 	    return this;
 	  }
-	  /**
-	  * Override default typecasters.
-	  *
-	  * @example
-	  * schema.typecaster('SomeClass', val => new SomeClass(val))
-	  *
-	  * @example
-	  * schema.typecaster({ SomeClass: val => new SomeClass(val) })
-	  *
-	  * @param {String|Object} name - name of the validator or an object with name-function pairs
-	  * @param {Function} [fn] - the function to use
-	  * @return {Schema}
-	  */
-
 
 	  typecaster(name, fn) {
 	    assign(name, fn, this.typecasters);
@@ -1622,6 +1614,8 @@
 	Schema.ValidationError = ValidationError;
 
 	exports.Schema = Schema;
+	exports.dot = dot$1;
+	exports.typecast = typecast$1;
 
 	Object.defineProperty(exports, '__esModule', { value: true });
 

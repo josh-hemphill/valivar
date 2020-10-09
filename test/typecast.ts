@@ -1,3 +1,4 @@
+import { rule } from '../lib/tsPrimitives';
 import { typecast } from '../lib/typecast';
 
 describe('Typecast', () => {
@@ -7,6 +8,8 @@ describe('Typecast', () => {
 			expect(typecast('hi', 'TestSelfFunction')).toBe('hi');
 		});
 		test('should return error for not type of own casters', () => {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
 			typecast.casters.notAType = 0;
 			expect(() => typecast('hi','notAType')).toThrow('cannot cast to notAType');
 		});
@@ -18,7 +21,7 @@ describe('Typecast', () => {
 				expect(typecast(1, t)).toBe('1');
 				expect(typecast(null, t)).toBe('');
 				expect(typecast({x:2}, t)).toBe('{"x":2}');
-				expect(typecast((val) => val, t)).toBe('(val) => val');
+				expect(typecast((val: rule) => val, t)).toBe('(val) => val');
 			});
 			test('date should convert all types to dates', () => {
 				const t = 'date';
@@ -26,7 +29,7 @@ describe('Typecast', () => {
 				expect(typecast(1, t)).toMatchObject(new Date(1));
 				expect(typecast(null, t)).toMatchObject(epoch);
 				expect(typecast({x:2}, t)).toMatchObject(epoch);
-				expect(typecast((val) => val, t)).toMatchObject(epoch);
+				expect(typecast((val: rule) => val, t)).toMatchObject(epoch);
 				expect(typecast(NaN, t)).toMatchObject(epoch);
 				expect(typecast('July 4 1776', t)).toMatchObject(new Date('July 4 1776'));
 			});
@@ -36,7 +39,7 @@ describe('Typecast', () => {
 				expect(typecast(1, t)).toMatchObject([1]);
 				expect(typecast(null, t)).toMatchObject([]);
 				expect(typecast({x:2}, t)).toMatchObject([{x:2}]);
-				const fn = (val) => val;
+				const fn = (val: rule) => val;
 				expect(typecast(fn, t)).toHaveProperty('0',fn);
 				expect(typecast(NaN, t)).toMatchObject([NaN]);
 				expect(typecast('July 4 1776', t)).toMatchObject(['July 4 1776']);
@@ -47,7 +50,7 @@ describe('Typecast', () => {
 				expect(typecast(1, t)).toMatchObject({value:1});
 				expect(typecast(null, t)).toMatchObject({});
 				expect(typecast({x:2}, t)).toMatchObject({x:2});
-				const fn = (val) => val;
+				const fn = (val: rule) => val;
 				expect(typecast(fn, t)).toHaveProperty('value', fn);
 				expect(typecast('{"x":2}', t)).toMatchObject({x:2});
 			});

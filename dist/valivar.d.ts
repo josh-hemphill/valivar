@@ -1,15 +1,20 @@
 /**
  * Custom errors.
  *
- * @private
  */
 declare class ValidationError extends Error {
-    private defineProp;
+    path: unknown;
+    expose: boolean;
+    status: number;
     constructor(message: string | undefined, path: unknown);
 }
 type key = PropertyKey;
 type numish = number | string | undefined;
 type magnitudeOptions = number | {
+    max: numish;
+} | {
+    min: numish;
+} | {
     min: numish;
     max: numish;
 };
@@ -18,18 +23,28 @@ type empty = typeof empty;
 type rec = Record<string, unknown>;
 type obj = Record<key, unknown>;
 type arr = unknown[];
-type rule = obj | arr | string | Schema | Property;
+type rule = obj | arr | string | Schema | Property | CallableFunction;
 interface reportedTypes {
     date: string;
     regexp: string;
     arguments: string;
     array: string;
     error: string;
+    map: string;
     null: string;
     undefined: string;
     nan: string;
     element: string;
+    node: string;
     buffer: string;
+    class: string;
+    string: string;
+    number: string;
+    bigint: string;
+    boolean: string;
+    symbol: string;
+    object: string;
+    function: string;
 }
 type typeOf_Key = keyof reportedTypes;
 type unknownFunction = (val: unknown) => unknown;
@@ -52,6 +67,10 @@ type messageOpts = boolean | number | string | {
 } | CallableFunction;
 type messageFunction = (prop: string, ctx: obj, ...options: messageOpts[]) => string;
 type argsTypes = CallableFunction | boolean | string | number | rec | arr | RegExp;
+interface ValidationFunctionArr extends Array<argsTypes> {
+    0: ValidationFunction;
+    [index: number]: argsTypes;
+}
 declare const Messages: {
     type(prop: string, ctx: rec | empty, type: string | unknown): string;
     required(prop: string): string;
@@ -148,7 +167,7 @@ declare class Property {
      * @param {Object} fns - object with named validation functions to call
      * @return {Property}
      */
-    use(fns: Record<key, ValidationFunction | ValidationFunction[]>): this;
+    use(fns: Record<key, ValidationFunction | ValidationFunctionArr>): this;
     /**
      * Registers a validator that checks for presence.
      *
@@ -354,7 +373,8 @@ declare class Property {
      * @return {Property}
      * @private
      */
-    _register(type: string, args: argsTypes[], fn?: ValidationFunction): this;
+    _register(type: string, args: argsTypes[] | [
+    ], fn?: ValidationFunction): this;
     /**
      * Create an error
      *
@@ -373,6 +393,16 @@ type validationOptions = {
     typecast?: boolean;
     strip?: boolean;
     strict?: boolean;
+};
+declare const dot: {
+    name: string;
+    set(obj: Record<string | number | symbol, unknown>, path: string, val: unknown): Record<string | number | symbol, unknown>;
+    get(obj: Record<string | number | symbol, unknown>, path: string): unknown;
+    delete(obj: Record<string | number | symbol, unknown>, path: string): void;
+};
+declare const typecast$0: {
+    (val: unknown, type: string | number): unknown;
+    casters: typecasters;
 };
 /**
  * @module Schema
@@ -483,7 +513,7 @@ declare class Schema {
      * @return {Schema}
      * @private
      */
-    enforce(obj: obj): ValidationError[] | [];
+    enforce(obj: obj): Array<ValidationError>;
     /**
    * Validate given `obj`.
    *
@@ -533,7 +563,7 @@ declare class Schema {
      * @param {Object} obj
      * @param {Object} [opts]
      */
-    assert(obj: obj, opts: validationOptions): void;
+    assert(obj: obj, opts?: validationOptions): void;
     /**
    * Override default error messages.
    *
@@ -564,9 +594,10 @@ declare class Schema {
      * @param {String|Function} [message] - the message or message generator to use
      * @return {Schema}
      */
-    message(name: string | {
-        [index: string]: string;
-    }, message: string | CallableFunction): this;
+    message(name: {
+        [index: string]: string | CallableFunction;
+    }): this;
+    message(name: string, message?: string | CallableFunction): this;
     /**
    * Override default validators.
    *
@@ -593,9 +624,10 @@ declare class Schema {
      * @param {Function} [fn] - the function to use
      * @return {Schema}
      */
-    validator(name: string | {
+    validator(name: {
         [index: string]: CallableFunction;
-    }, fn: CallableFunction): this;
+    }): this;
+    validator(name: string, fn?: string | CallableFunction): this;
     /**
    * Override default typecasters.
    *
@@ -622,9 +654,10 @@ declare class Schema {
      * @param {Function} [fn] - the function to use
      * @return {Schema}
      */
-    typecaster(name: string | {
+    typecaster(name: {
         [index: string]: CallableFunction;
-    }, fn: CallableFunction): this;
+    }): this;
+    typecaster(name: string, fn?: string | CallableFunction): this;
     /**
    * Accepts a function that is called whenever new props are added.
    *
@@ -658,5 +691,5 @@ declare class Schema {
      */
     propagate(path: string, prop: Property): this;
 }
-export { Schema };
+export { dot, typecast$0 as typecast, Schema };
 //# sourceMappingURL=valivar.d.ts.map

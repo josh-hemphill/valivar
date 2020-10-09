@@ -1,20 +1,11 @@
 import { getType } from '../lib/type';
-let localGlobal = {};
-try {
-	// eslint-disable-next-line no-undef
-	localGlobal = globalThis;
-} catch (error) {
-	// eslint-disable-next-line no-undef
-	global.globalThis = {};
-	// eslint-disable-next-line no-undef
-	localGlobal = global.globalThis;
-}
 describe('Types',() => {
 	describe('.getType()', () => {
 		test('should have all builtin types', () => {
 			expect(getType(new Date())).toBe('date');
 			expect(getType(new RegExp('[a-z]'))).toBe('regexp');
-			// eslint-disable-next-line no-undef
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
 			expect(getType(arguments)).toBe('arguments');
 			expect(getType(Array(2))).toBe('array');
 			expect(getType(new Error())).toBe('error');
@@ -44,15 +35,17 @@ describe('Types',() => {
 				nodeName = 'hello'
 				nodeType = 2
 			}
-			// eslint-disable-next-line no-undef
-			localGlobal.Node = Node;
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			globalThis.Node = Node;
 			expect(getType(new Node())).toBe('node');
 			class Element {
 				nodeName = 'hello'
 				nodeType = 1
 			}
-			// eslint-disable-next-line no-undef
-			localGlobal.HTMLElement = Element;
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			globalThis.HTMLElement = Element;
 			expect(getType(new Element())).toBe('element');
 		});
 	});
