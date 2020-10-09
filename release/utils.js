@@ -1,5 +1,9 @@
 'use strict';
-const { exec, os, path } = require('./deps');
+const rawExec = require('child_process').exec;
+const util = require('util');
+const exec = util.promisify(rawExec);
+const path = require('path');
+const os = require('os');
 const fail = (msg) => {
 	console.log(msg);
 	process.exit(1);

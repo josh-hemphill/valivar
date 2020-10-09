@@ -1,6 +1,6 @@
 'use strict';
-const {fs,exec, standardVersion, sv:{ coerce, gt }, utils:{execChain}} = require('./deps');
-const coerceVersion = () => {return coerce(JSON.parse(fs.readFileSync('../package.json').toJSON()).version)};
+const {fs,path,standardVersion, sv:{ coerce, gt }, utils:{execChain}} = require('./deps');
+const coerceVersion = () => {return coerce(JSON.parse(fs.readFileSync(path.resolve('package.json')).toString()).version)};
 const dry_run_args = ['--dry-run','-d'];
 const isDryRun = process.argv.some((x) => dry_run_args.includes(x));
 let version = '';
@@ -13,7 +13,7 @@ execChain([
 	'npm i',
 	'npm run validate',
 	'git add .',
-]).then(()=>{
+]).then(async()=>{
 	version = coerceVersion();
 	console.log(version);
 }).then(
@@ -23,15 +23,17 @@ execChain([
 		infile: 'CHANGELOG.md',
 	}),
 ).then(
-	exec(`git push --follow-tags origin latest`),
+	execChain([`git push --follow-tags origin latest`]),
 ).then(() => {
 	const newVersion = coerceVersion();
 	console.log(newVersion);
-	if (gt(newVersion, version)) {
+	if (gt(newVersion, version) && !isDryRun) {
 		version = 'v' + newVersion;
-		return exec(`gh release create ${version} -F CHANGELOG.md -t ${version}`);
+		return execChain([`gh release create ${version} -F CHANGELOG.md -t ${version}`]);
 	}
-}).catch((err) => {
+}).then(
+	isDryRun ? execChain([`git push --follow-tags origin latest`]) : true,
+).catch((err) => {
 	console.error(`standard-version or other build step failed with message: ${err.message}`);
 });
 			
