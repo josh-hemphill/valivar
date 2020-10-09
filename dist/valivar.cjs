@@ -87,13 +87,11 @@ function getType(val) {
   }
 }
 
-const typeOf = getType;
 /**
  * Assign given key and value (or object) to given object
  *
  * @private
  */
-
 function assign(key, val, obj) {
   if (typeof key === 'string') {
     obj[key] = val;
@@ -102,74 +100,6 @@ function assign(key, val, obj) {
 
   if (typeof key === 'object') {
     Object.keys(key).forEach(k => obj[k] = key[k]);
-  }
-}
-/**
- * Enumerate all permutations of `path`, replacing $ with array indices and * with object indices
- *
- * @private
- */
-
-function enumerate(path, obj, callback) {
-  const parts = path.split(/\.[$*](?=\.|$|\*)/);
-  const first = parts.shift();
-  const arr = dot.get(obj, first || '');
-
-  if (!parts.length) {
-    return callback(first || '', arr);
-  }
-
-  if (!Array.isArray(arr)) {
-    if (typeOf(arr) === 'object') {
-      const keys = Object.keys(arr);
-
-      for (let i = 0; i < keys.length; i++) {
-        const current = join(keys[i], first);
-        const next = current + parts.join('.*');
-        enumerate(next, obj, callback);
-      }
-    }
-
-    return;
-  }
-
-  for (let i = 0; i < arr.length; i++) {
-    const current = join(i, first);
-    const next = current + parts.join('.$');
-    enumerate(next, obj, callback);
-  }
-}
-/**
- * Walk object and call `callback` with path and prop name
- *
- * @private
- */
-
-function walk(obj, callback, path, prop) {
-  const type = typeOf(obj);
-
-  if (type === 'array') {
-    const localObj = obj;
-    localObj.forEach((v, i) => walk(v, callback, join(i, path), join('$', prop)));
-    return;
-  }
-
-  if (type !== 'object') {
-    return;
-  }
-
-  const localObj = obj;
-
-  for (const [key, val] of Object.entries(localObj)) {
-    const newPath = join(key, path);
-    const newProp = join(key, prop);
-    const newCatchProp = join('*', prop);
-
-    if (callback(newPath, newCatchProp, true)) {
-      walk(val, callback, newPath, newCatchProp);
-    } else if (callback(newPath, newProp)) {
-      walk(val, callback, newPath, newProp);
-    }
   }
 }
 /**
@@ -365,6 +295,75 @@ const dot = {
   }
 
 };
+const typeOf = getType;
+/**
+ * Enumerate all permutations of `path`, replacing $ with array indices and * with object indices
+ *
+ * @private
+ */
+
+function enumerate(path, obj, callback) {
+  const parts = path.split(/\.[$*](?=\.|$|\*)/);
+  const first = parts.shift();
+  const arr = dot.get(obj, first || '');
+
+  if (!parts.length) {
+    return callback(first || '', arr);
+  }
+
+  if (!Array.isArray(arr)) {
+    if (typeOf(arr) === 'object') {
+      const keys = Object.keys(arr);
+
+      for (let i = 0; i < keys.length; i++) {
+        const current = join(keys[i], first);
+        const next = current + parts.join('.*');
+        enumerate(next, obj, callback);
+      }
+    }
+
+    return;
+  }
+
+  for (let i = 0; i < arr.length; i++) {
+    const current = join(i, first);
+    const next = current + parts.join('.$');
+    enumerate(next, obj, callback);
+  }
+}
+/**
+ * Walk object and call `callback` with path and prop name
+ *
+ * @private
+ */
+
+function walk(obj, callback, path, prop) {
+  const type = typeOf(obj);
+
+  if (type === 'array') {
+    const localObj = obj;
+    localObj.forEach((v, i) => walk(v, callback, join(i, path), join('$', prop)));
+    return;
+  }
+
+  if (type !== 'object') {
+    return;
+  }
+
+  const localObj = obj;
+
+  for (const [key, val] of Object.entries(localObj)) {
+    const newPath = join(key, path);
+    const newProp = join(key, prop);
+    const newCatchProp = join('*', prop);
+
+    if (callback(newPath, newCatchProp, true)) {
+      walk(val, callback, newPath, newCatchProp);
+    } else if (callback(newPath, newProp)) {
+      walk(val, callback, newPath, newProp);
+    }
+  }
+}
 
 /***************************************************************************************
 *   MODIFIED FROM

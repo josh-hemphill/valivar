@@ -395,9 +395,7 @@ type validationOptions = {
     strict?: boolean;
 };
 declare const dot: {
-    name: string; /**
-     * @module Schema
-     */
+    name: string;
     set(obj: Record<string | number | symbol, unknown> | arr, path: string, val: unknown): Record<string | number | symbol, unknown> | arr;
     get(obj: Record<string | number | symbol, unknown> | arr, path: string): unknown;
     delete(obj: Record<string | number | symbol, unknown> | arr, path: string): void;

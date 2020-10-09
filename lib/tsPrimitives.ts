@@ -12,7 +12,7 @@ export type empty = typeof empty;
 export type rec = Record<string, unknown>;
 export type obj = Record<key, unknown>
 export type arr = unknown[];
-
+export type keyProp = key | rec;
 export type rule = obj|arr|string|Schema|Property|CallableFunction;
 export type Falsy = false | 0 | '' | null | undefined;
 

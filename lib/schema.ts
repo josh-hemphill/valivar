@@ -1,11 +1,11 @@
-import { dot as Dot } from './dot';
+import { dot as Dot, walk, enumerate  } from './dot';
 import { typecast as Typecast } from './typecast';
 import Property from './property';
 import Messages from './messages';
 import Validators, {ValidatorProps} from './validators';
 import ValidationError from './error';
 import { key, obj, rule, typecasters, hookFunction, messageOpts } from './tsPrimitives';
-import { walk, enumerate, join, assign, isWholeObject, isRule, isLimitedKey } from './utils';
+import { join, assign, isWholeObject, isRule, isLimitedKey } from './utils';
 
 type validationOptions = {typecast?: boolean; strip?: boolean; strict?: boolean;}
 
