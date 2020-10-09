@@ -4,7 +4,7 @@ const coerceVersion = () => {return coerce(JSON.parse(fs.readFileSync(path.resol
 const dry_run_args = ['--dry-run','-d'];
 const isDryRun = process.argv.some((x) => dry_run_args.includes(x));
 let version = '';
-
+const CHANGELOG = path.resolve('CHANGELOG.md');
 execChain([
 	'rm -rf dist',
 	'npm run build',
@@ -19,7 +19,7 @@ execChain([
 	await standardVersion({
 		noVerify: true,
 		dryRun: isDryRun,
-		infile: path.resolve('CHANGELOG.md'),
+		infile: CHANGELOG,
 	});
 },
 ).then(async()=>{
@@ -28,7 +28,7 @@ execChain([
 	const newVersion = coerceVersion();
 	if (gt(newVersion, version) && !isDryRun) {
 		version = 'v' + newVersion;
-		return execChain([`gh release create ${version} -F CHANGELOG.md -t ${version}`]);
+		return execChain([`gh release create ${version} -F ${CHANGELOG} -t ${version}`]);
 	}
 }).then(
 	isDryRun ? execChain([`git push --follow-tags origin latest`]) : true,

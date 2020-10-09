@@ -8,7 +8,7 @@ Mostly derived from [eivindfjeldstad/validate](https://github.com/eivindfjeldsta
 [![NPM](https://img.shields.io/static/v1?label=&message=NPM&color=informational&style=flat-square)](https://npmjs.org/package/valivar)
 [![Deno](https://img.shields.io/static/v1?label=&message=Deno&color=informational&style=flat-square)](https://deno.land/x/valivar/mod.ts)
 [![API doc](https://img.shields.io/static/v1?label=Deno&message=API-Doc&color=informational&style=flat-square)](https://doc.deno.land/https/deno.land/x/valivar/mod.ts)
-[![docs](https://img.shields.io/static/v1?label=Deno&message=API-Doc&color=informational&style=flat-square)](https://josh-hemphill.github.io/valivar/#/)
+[![docs](https://img.shields.io/static/v1?label=&message=Docs&color=informational&style=flat-square)](https://josh-hemphill.github.io/valivar/#/)
 [![Build Status](https://img.shields.io/travis/josh-hemphill/valivar.svg?style=flat-square)](https://travis-ci.org/josh-hemphill/valivar)
 [![Codecov](https://img.shields.io/codecov/c/github/josh-hemphill/valivar.svg?style=flat-square)](https://codecov.io/gh/josh-hemphill/valivar)
 [![dependencies](https://img.shields.io/david/josh-hemphill/valivar?label=dep&style=flat-square)](https://david-dm.org/josh-hemphill/valivar)
