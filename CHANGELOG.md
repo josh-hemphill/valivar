@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.2.5](https://github.com/josh-hemphill/valivar/compare/v6.2.4...v6.2.5) (2020-10-09)
+
+
+### Bug Fixes
+
+* **build:** fixed build pipline ([dc4bfc4](https://github.com/josh-hemphill/valivar/commit/dc4bfc499c925039c8d379d57d5866e27497b69c))
+
 ### [6.2.4](https://github.com/josh-hemphill/valivar/compare/v6.2.3...v6.2.4) (2020-10-09)
 
 
