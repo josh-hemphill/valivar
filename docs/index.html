@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
+	<meta name="description" content="Javascript/Typescript schema-based validation and sanitation">
+	<title>Valivar - schema-based validation and sanitation</title>
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0fd430">
+	<meta name="apple-mobile-web-app-title" content="valivar">
+	<meta name="application-name" content="valivar">
+	<meta name="msapplication-TileColor" content="#2b5797">
+	<meta name="theme-color" content="#ffffff">
+	<link rel="stylesheet" href="https://unpkg.com/docsify-themeable/dist/css/theme-simple-dark.css">
+	<link rel="stylesheet" href="https://unpkg.com/prism-theme-one-dark/prism-onedark.css">
+	<link
+		href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined|Material+Icons+Two+Tone|Material+Icons+Round|Material+Icons+Sharp"
+		rel="stylesheet" />
+	<style>
+		:root {
+			--theme-hue: 150;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="app"></div>
+
+	<script>
+		// 4. Docsify Configuration
+		window.$docsify = {
+			name: 'Valivar',
+			repo: 'josh-hemphill/valivar',
+			coverpage: 'coverpage.md',
+			homepage: 'readme.md',
+			loadSidebar: 'sidebar.md',
+			auto2top: true,
+			maxLevel: 3,
+			subMaxLevel: 3,
+			relativePath: true,
+			routerMode: 'hash',
+			logo: 'assets/img/valivar2.svg'
+		};
+	</script>
+
+	<!-- Required: docsify + docsify-themeable -->
+	<script src="https://unpkg.com/docsify/lib/docsify.min.js"></script>
+	<script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/external-script.min.js"></script>
+	<script src="https://unpkg.com/docsify-themeable"></script>
+
+	<!-- 6. Docsify Plugins -->
+	<script src="https://unpkg.com/docsify/lib/plugins/search.js"></script>
+	<script src="https://unpkg.com/docsify-pagination/dist/docsify-pagination.min.js"></script>
+	<!-- <script src="https://unpkg.com/docsify-material-icons/dist/docsify-material-icons.min.js"></script> -->
+</body>
+
+</html>

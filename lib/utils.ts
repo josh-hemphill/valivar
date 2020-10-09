@@ -2,7 +2,7 @@ import { dot } from './dot';
 import { getType } from './type';
 const typeOf = getType;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { key, rec, obj, rule, something } from './tsPrimitives';
+import { key, rec, obj, rule, something, fromString } from './tsPrimitives';
 type keyProp = key | rec;
 
 /**
@@ -105,14 +105,14 @@ export function isKeyAble(prop: unknown): prop is key {
 	return typeof prop === 'string' || typeof prop === 'number' || typeof prop === 'symbol';
 }
 export function isLimitedKey(prop: unknown): prop is string | number {
-	return typeof prop === 'string' || typeof prop === 'number' || typeof prop === 'symbol';
+	return typeof prop === 'string' || typeof prop === 'number';
 }
 
 export function isIntegerLike(prop: unknown): prop is number {
-	return !isNaN(parseInt('' + prop, 10));
+	return typeof prop !== 'symbol' && !isNaN(parseInt('' + prop, 10));
 }
 export function isNumberLike(prop: unknown): prop is number {
-	return typeof prop === 'number' || !isNaN(parseFloat('' + prop));
+	return typeof prop === 'number' || (typeof prop !== 'symbol' && !isNaN(parseFloat('' + prop)));
 }
 
 export function isRule(obj: unknown): obj is rule {
@@ -132,4 +132,33 @@ export function hasConstructor(obj: NonNullable<something>): obj is hasConstruct
 
 export function isSomething(obj: NonNullable<unknown>): obj is NonNullable<something> {
 	return typeof obj === 'object' || typeof obj === 'string' || typeof obj === 'number' || typeof obj === 'boolean';
+}
+
+/**
+* @private
+*/
+export function isSafe(obj: unknown, prop: NonNullable<fromString>): obj is rec | unknown[] {
+	if (isObject(obj)) {
+		return obj[prop] === undefined || hasOwnProperty(obj, prop);
+	}
+
+	if (Array.isArray(obj)) {
+		return !isNaN(parseInt('' + prop, 10));
+	}
+
+	return false;
+}
+
+/**
+* @private
+*/
+export function isObject(obj: unknown): obj is rec {
+	return Object.prototype.toString.call(obj) === '[object Object]';
+}
+
+/**
+* @private
+*/
+export function isRecord(obj:unknown): obj is Record<string | number, unknown> {
+	return typeof obj === 'object' && obj !== null;
 }

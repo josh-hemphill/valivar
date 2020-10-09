@@ -12,14 +12,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build
-        uses: andstor/jsdoc-action@v1
-        with:
-          source_dir: lib
-          output_dir: docs
-          config_file: config/jsdoc.js
-          template: better-docs
-
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:

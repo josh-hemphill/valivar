@@ -31,13 +31,14 @@ describe('Types',() => {
 			expect(getType(TestType)).toBe('class');
 		});
 		test('should return browser types', () => {
+			const localGlobal = globalThis || global;
 			class Node {
 				nodeName = 'hello'
 				nodeType = 2
 			}
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
-			globalThis.Node = Node;
+			localGlobal.Node = Node;
 			expect(getType(new Node())).toBe('node');
 			class Element {
 				nodeName = 'hello'
@@ -45,7 +46,7 @@ describe('Types',() => {
 			}
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
-			globalThis.HTMLElement = Element;
+			localGlobal.HTMLElement = Element;
 			expect(getType(new Element())).toBe('element');
 		});
 	});

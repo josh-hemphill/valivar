@@ -7,20 +7,11 @@
 *
 ***************************************************************************************/
 
-import { rec, obj, fromString } from './tsPrimitives';
-
-/**
-* @private
-*/
-function isIntegerLike(prop: unknown): prop is number {
-	return !isNaN(parseInt('' + prop, 10));
-}
+import { rec, obj, fromString, arr } from './tsPrimitives';
+import { isIntegerLike, isObject, isSafe, isRecord } from './utils';
 
 /**
  * Get and set points in an object by their 'dot' path
- * @category Bonus Modules
- * @exports dot
- * @public
  */
 export const dot = {
 	name: 'Dot',
@@ -34,12 +25,11 @@ export const dot = {
 	 * @return {Object}
 	 * @public
 	 */
-	set(obj: obj, path: string, val: unknown): obj {
+	set(obj: obj | arr, path: string, val: unknown): obj | arr {
 		const segs = path.split('.');
 		const attr = segs.pop();
 		const src = obj;
 		let currentLayer: unknown = obj;
-		// if (segs.includes('c')) debugger;
 	
 		for (let i = 0; i < segs.length; i++) {
 			const seg = segs[i];
@@ -76,7 +66,7 @@ export const dot = {
 	 * @return {Mixed}
 	 * @public
 	 */
-	get(obj: obj, path: string): unknown {
+	get(obj: obj | arr, path: string): unknown {
 		const segs = <fromString[]> path.split('.');
 		const attr = segs.pop();
 		let currentLayer: unknown = obj;
@@ -94,7 +84,7 @@ export const dot = {
 				return;
 			}
 		}
-		if (attr !== null && attr !== undefined && isSafe(currentLayer, attr)) {
+		if (attr !== null && attr !== undefined) {
 			if (Array.isArray(currentLayer) && isIntegerLike(attr)) {
 				return currentLayer[attr];
 			} else if (isObject(currentLayer)) {
@@ -115,7 +105,7 @@ export const dot = {
 	 * @return {Mixed}
 	 * @public
 	 */
-	delete(obj: obj, path: string): void {
+	delete(obj: obj | arr, path: string): void {
 		const segs = path.split('.');
 		const attr = segs.pop();
 		let reObj: unknown = obj;
@@ -140,38 +130,3 @@ export const dot = {
 	},
 };
 
-/**
-* @private
-*/
-function isSafe(obj: unknown, prop: NonNullable<fromString>): obj is rec | unknown[] {
-	if (isObject(obj)) {
-		return obj[prop] === undefined || hasOwnProperty(obj, prop);
-	}
-
-	if (Array.isArray(obj)) {
-		return !isNaN(parseInt('' + prop, 10));
-	}
-
-	return false;
-}
-
-/**
-* @private
-*/
-function hasOwnProperty(obj: rec, prop: PropertyKey): prop is keyof rec {
-	return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-/**
-* @private
-*/
-function isObject(obj: unknown): obj is rec {
-	return Object.prototype.toString.call(obj) === '[object Object]';
-}
-
-/**
-* @private
-*/
-function isRecord(obj:unknown): obj is Record<string | number, unknown> {
-	return typeof obj === 'object' && obj !== null;
-}

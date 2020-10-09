@@ -5,31 +5,35 @@ Mostly derived from [eivindfjeldstad/validate](https://github.com/eivindfjeldsta
 <br />
 
 [![version](https://img.shields.io/github/v/tag/josh-hemphill/valivar?sort=semver&style=flat-square)](https://github.com/josh-hemphill/valivar/releases)
-[![NPM](https://img.shields.io/static/v1?label=&message=NPM&color=informational&style=flat-square)](https://npmjs.org/package/validate)
+[![NPM](https://img.shields.io/static/v1?label=&message=NPM&color=informational&style=flat-square)](https://npmjs.org/package/valivar)
 [![Deno](https://img.shields.io/static/v1?label=&message=Deno&color=informational&style=flat-square)](https://deno.land/x/valivar/mod.ts)
 [![deno doc](https://img.shields.io/static/v1?label=Deno&message=API-Doc&color=informational&style=flat-square)](https://doc.deno.land/https/deno.land/x/valivar/mod.ts)
 [![Build Status](https://img.shields.io/travis/josh-hemphill/valivar.svg?style=flat-square)](https://travis-ci.org/josh-hemphill/valivar)
 [![Codecov](https://img.shields.io/codecov/c/github/josh-hemphill/valivar.svg?style=flat-square)](https://codecov.io/gh/josh-hemphill/valivar)
-[![dependencies](https://img.shields.io/david/josh-hemphill/valivar?label=dep&style=flat-square)](https://david-dm.org/username/repo)
+[![dependencies](https://img.shields.io/david/josh-hemphill/valivar?label=dep&style=flat-square)](https://david-dm.org/josh-hemphill/valivar)
 
 ## Install
 
 ### Node.js or Browser
+
 ```bash
 npm install valivar
 ```
 
 ### Deno
+
 ```js
 import valivar from "https://deno.land/x/valivar/mod.ts"
 ```
 
 ### Import in HTML
+
 ```html
 <script type="text/javascript" src="dist/valivar.js"></script>
 ```
 
 ### From CDN
+
 ```html
 <script type="text/javascript" src="https://unpkg.com/valivar"></script>
 ```
