@@ -7,7 +7,7 @@
 *
 ***************************************************************************************/
 
-import { rec, obj, fromString, key } from './tsPrimitives';
+import { rec, obj, fromString } from './tsPrimitives';
 
 /**
 * @private

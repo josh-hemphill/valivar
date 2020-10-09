@@ -9,7 +9,7 @@ import {
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type TypeFunction = Function
-import { hasConstructor, hasOwnProperty, isSomething } from './utils';
+import { hasConstructor, isSomething } from './utils';
 
 function compareMagnitudes(len: Exclude<magnitudeOptions,number>, length: number): boolean {
 	if ('min' in len) {
