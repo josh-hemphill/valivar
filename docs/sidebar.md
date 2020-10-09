@@ -1,4 +1,4 @@
-- [Schema](/)
+- [Schema](/?id=main)
 - [Changelog](../CHANGELOG.md)
 - **Links**
 - [![Code](assets/img/code.svg)Demo Sandbox](https://codepen.io/josh-hemphill/pen/Rwaxbor)

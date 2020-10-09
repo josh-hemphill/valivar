@@ -31,7 +31,12 @@ describe('Types',() => {
 			expect(getType(TestType)).toBe('class');
 		});
 		test('should return browser types', () => {
-			const localGlobal = globalThis || global;
+			let localGlobal = {};
+			try {
+				localGlobal = globalThis;
+			} catch (error) {
+				localGlobal = global;
+			}
 			class Node {
 				nodeName = 'hello'
 				nodeType = 2
