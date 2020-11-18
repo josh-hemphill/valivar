@@ -11,7 +11,8 @@ Mostly derived from [eivindfjeldstad/validate](https://github.com/eivindfjeldsta
 [![docs](https://img.shields.io/static/v1?label=&message=Docs&color=informational&style=flat-square)](https://josh-hemphill.github.io/valivar/#/)
 [![Build Status](https://img.shields.io/travis/josh-hemphill/valivar.svg?style=flat-square)](https://travis-ci.org/josh-hemphill/valivar)
 [![Codecov](https://img.shields.io/codecov/c/github/josh-hemphill/valivar.svg?style=flat-square)](https://codecov.io/gh/josh-hemphill/valivar)
-[![dependencies](https://img.shields.io/david/josh-hemphill/valivar?label=dep&style=flat-square)](https://david-dm.org/josh-hemphill/valivar)
+[![Libraries.io dependency status for latest release](https://img.shields.io/librariesio/release/npm/valivar?label=Deps&style=flat-square)](https://libraries.io/npm/valivar)
+[![Rate on Openbase](https://badges.openbase.io/js/rating/valivar.svg)](https://openbase.io/js/valivar?utm_source=embedded&utm_medium=badge&utm_campaign=rate-badge)
 
 ## Install
 
