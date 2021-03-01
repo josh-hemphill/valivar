@@ -108,6 +108,6 @@
 		]
 	},
 	"release": {
-		"extends": "config/.releaserc.json"
+		"extends": "./config/.releaserc.json"
 	}
 }
