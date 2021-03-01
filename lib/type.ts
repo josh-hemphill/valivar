@@ -72,7 +72,7 @@ export function getType(val: unknown): string {
 	//Returns true if it is a DOM node
 	function isNode(o: unknown): boolean {
 		const globalKey = 'Node';
-		return (
+		return !!(
 			Object.prototype.hasOwnProperty.call(localGlobal.globalThis, globalKey) ? o instanceof localGlobal.globalThis[globalKey] : 
 				o && isWholeObject(o) && typeof o.nodeType === 'number' && typeof o.nodeName==='string'
 		);
@@ -80,7 +80,7 @@ export function getType(val: unknown): string {
 	//Returns true if it is a DOM element
 	function isElement(o: unknown): boolean {
 		const globalKey = 'HTMLElement';
-		return (
+		return !!(
 			Object.prototype.hasOwnProperty.call(localGlobal.globalThis, globalKey) ? o instanceof localGlobal.globalThis[globalKey] : 
 				o && isWholeObject(o) && o.nodeType === 1 && typeof o.nodeName==='string'
 		);
