@@ -106,5 +106,21 @@
 			"eslint --fix",
 			"git add"
 		]
+	},
+	"release": {
+		"branches": [
+			"+([0-9])?(.{+([0-9]),x}).x",
+			"latest",
+			"next",
+			"latest-next",
+			{
+				"name": "beta",
+				"prerelease": true
+			},
+			{
+				"name": "alpha",
+				"prerelease": true
+			}
+		]
 	}
 }
