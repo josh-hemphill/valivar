@@ -1,3 +1,8 @@
+# DEPRICATED
+
+I built this because I hated the verboseness of existing schema systems but needed something.
+With the addtion of the official standard [Json Type Definitions in AJV](https://ajv.js.org/json-type-definition.html), I'm depricating this since the security and features offered in AJV under JTD schemas, makes this irrelivant. AJV can use your schemas to publish API schemas, and compile schema specific JSON parsers/serializers that are even more fast and secure than `JSON.parse() or JSON.stringify()` which is beyond what I could hope to do in this current package.
+
 # Valivar
 
 Mostly derived from [eivindfjeldstad/validate](https://github.com/eivindfjeldstad/validate); Valivar provides dynamic schemas for modern javascript and typescript validation and sanitization. In Valivar you can use catch-all keys `$` and `*` to define any array or object respectively, letting you define a single schema that can apply consistent rules for growing and changing datasets.
